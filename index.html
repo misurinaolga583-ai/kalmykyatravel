@@ -1,0 +1,2393 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="color-scheme" content="light">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>БЕЛАЯ ЛАДЬЯ · туры по Калмыкии</title>
+  <link rel="icon" href="images/logo/IMG_20260412_204010_119.png" type="image/x-icon">
+  <!-- Font Awesome для иконок -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Google Fonts: Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..700&display=swap" rel="stylesheet">
+  <style>
+    html {
+      color-scheme: light;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Inter", sans-serif;
+      background-color: #f8f6ed;
+      color: #3d3224;
+      line-height: 1.5;
+      scroll-behavior: smooth;
+    }
+
+    /* контейнер с уменьшенными боковыми отступами — картинка становится шире */
+    .container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0 15px;
+      /* было 30px, уменьшили для более широкого контента */
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    h1 {
+      font-size: 4.5rem;
+      line-height: 1.1;
+    }
+
+    h2 {
+      font-size: 2.8rem;
+      margin-bottom: 1rem;
+    }
+
+    h3 {
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      color: #3d3224;
+      margin-bottom: 1.5rem;
+      font-weight: 400;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .btn {
+      display: inline-block;
+      background-color: #dcc187;
+      color: #f8f6ed;
+      font-weight: 600;
+      padding: 14px 36px;
+      border-radius: 40px;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.2s ease, transform 0.1s ease;
+      box-shadow: 0 4px 12px rgba(44, 54, 90, 0.2);
+      font-size: 1rem;
+    }
+
+    .btn:hover {
+      background-color: #e8cc8f;
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 2px solid #dcc187;
+      color: #dcc187;
+      box-shadow: none;
+    }
+
+    .btn-outline:hover {
+      background: #dcc187;
+      color: white;
+    }
+
+    .arrow-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      color: #c89c7a;
+      border-bottom: 2px solid transparent;
+      transition: border-color 0.2s;
+    }
+
+    .arrow-link i {
+      transition: transform 0.2s;
+    }
+
+    .arrow-link:hover {
+      border-bottom-color: #c89c7a;
+    }
+
+    .arrow-link:hover i {
+      transform: translateX(5px);
+    }
+
+    /* хедер */
+    header {
+      padding: 20px 0;
+      position: sticky;
+      top: 0;
+      background-color: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      z-index: 100;
+      border-bottom: 1px solid rgba(196, 188, 176, 0.4);
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+
+    .logo {
+      font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+      font-size: 1.8rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+      color: #dcc187;
+    }
+
+    .header-icons {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .header-icons a {
+      color: #3d3224;
+      font-size: 1.3rem;
+      position: relative;
+    }
+
+    /* Бургер-кнопка (скрыта на десктопе) */
+    .burger-menu {
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 30px;
+      height: 21px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      z-index: 110;
+    }
+
+    .burger-menu span {
+      width: 100%;
+      height: 3px;
+      background-color: #3d3224;
+      border-radius: 3px;
+      transition: all 0.3s ease;
+    }
+
+    /* Анимация для крестика при открытом меню */
+    .burger-menu.active span:nth-child(1) {
+      transform: translateY(9px) rotate(45deg);
+    }
+
+    .burger-menu.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .burger-menu.active span:nth-child(3) {
+      transform: translateY(-9px) rotate(-45deg);
+    }
+
+    /* Адаптив для планшетов и телефонов */
+    @media (max-width: 992px) {
+      .nav-menu {
+        gap: 20px;
+      }
+    }
+
+    @media (max-width: 768px) {
+
+      /* Показываем бургер-кнопку */
+      .burger-menu {
+        display: flex;
+      }
+
+      /* Скрываем стандартное меню, делаем его выпадающим */
+      .nav-menu {
+        position: fixed;
+        top: 80px;
+        /* Высота хедера */
+        left: -100%;
+        width: 100%;
+        height: calc(100vh - 80px);
+        background-color: rgba(255, 255, 255, 0.97);
+        backdrop-filter: blur(10px);
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 30px;
+        padding: 40px 20px;
+        transition: left 0.3s ease;
+        z-index: 99;
+        overflow-y: auto;
+      }
+
+      .nav-menu.active {
+        left: 0;
+      }
+
+      .nav-menu a {
+        font-size: 1.4rem;
+        padding: 12px 0;
+        width: 100%;
+        text-align: center;
+        border-bottom: 1px solid rgba(44, 54, 90, 0.1);
+      }
+
+      /* Корректируем логотип и иконки */
+      .header-inner {
+        position: relative;
+      }
+
+      .logo {
+        font-size: 1.4rem;
+      }
+
+      .header-icons {
+        gap: 15px;
+        margin-right: 10px;
+      }
+
+      .header-icons a {
+        font-size: 1.2rem;
+      }
+
+      /* Чтобы контент не перекрывался меню */
+      body.menu-open {
+        overflow: hidden;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .logo {
+        font-size: 1.2rem;
+      }
+
+      .logo img {
+        width: 30px;
+        height: 30px;
+      }
+
+      .header-icons {
+        gap: 12px;
+      }
+    }
+
+    .nav-menu {
+      display: flex;
+      gap: 40px;
+      font-weight: 500;
+    }
+
+    .nav-menu a {
+      transition: color 0.2s;
+    }
+
+    .nav-menu a:hover {
+      color: #A67B5B;
+    }
+
+    .header-cta .btn {
+      padding: 12px 28px;
+    }
+
+    /* hero */
+    .hero {
+      margin-top: 40px;
+      margin-bottom: 100px;
+    }
+
+    .hero-top {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 40px;
+    }
+
+    .hero-title {
+            font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+      font-size: 5rem;
+      line-height: 1;
+      color: #dcc187;
+    }
+
+    .hero-right {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: flex-start;
+      padding-bottom: 20px;
+    }
+
+    .hero-right p {
+      font-size: 1.3rem;
+      max-width: 400px;
+    }
+
+    /* hero banner с фоном и относительным позиционированием */
+    .hero-banner {
+      position: relative;
+      width: 100%;
+      border-radius: 30px;
+      overflow: hidden;
+      box-shadow: 0 20px 30px -10px rgba(44, 54, 90, 0.2);
+      height: 450px;
+      background-image: url(images/1776011497486.jpg);
+      background-size: cover;
+      /* чтобы изображение покрывало всю область */
+      background-position: center;
+    }
+
+    /* Оверлей для виджета */
+    .hero-overlay {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      transform: translateY(-50%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0 20px;
+      /* отступы по бокам */
+      z-index: 10;
+    }
+
+    /* Виджет поиска */
+    .search-widget {
+      background: rgba(238, 232, 223, 0.514);
+      backdrop-filter: blur(8px);
+      padding: 35px 40px;
+      border-radius: 60px;
+      max-width: 1100px;
+      /* чуть шире, чтобы вместить все поля */
+      width: 100%;
+      box-shadow: 0 20px 30px rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .search-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* На десктопе все в одну строку */
+    @media (min-width: 1000px) {
+      .search-row {
+        flex-wrap: nowrap;
+      }
+    }
+
+    .search-input {
+      flex: 2 1 250px;
+      position: relative;
+    }
+
+    .search-input i {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #3d3224;
+      font-size: 1.2rem;
+    }
+
+    .search-input input {
+      width: 100%;
+      padding: 16px 20px 16px 50px;
+      border: none;
+      border-radius: 50px;
+      background: white;
+      font-size: 1.1rem;
+      outline: 1px solid #C4BCB0;
+    }
+
+    .search-input input:focus {
+      outline: 2px solid #dcc187;
+    }
+
+    .date-field,
+    .guests-field {
+      flex: 1 1 160px;
+      background: white;
+      border-radius: 50px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      outline: 1px solid #C4BCB0;
+    }
+
+    .date-field i,
+    .guests-field i {
+      color: #3d3224;
+    }
+
+    .date-field input,
+    .guests-field select {
+      border: none;
+      background: transparent;
+      font-size: 1rem;
+      width: 100%;
+      outline: none;
+    }
+
+    .search-btn {
+      flex: 0 0 auto;
+      /* кнопка не растягивается */
+    }
+
+    .search-btn .btn {
+      padding: 16px 40px;
+      font-size: 1.1rem;
+      white-space: nowrap;
+    }
+
+    /* Адаптация для планшетов и мобильных */
+    @media (max-width: 900px) {
+      .hero-banner {
+        height: 500px;
+        /* побольше, чтобы виджет поместился */
+      }
+
+      .search-widget {
+        padding: 25px 20px;
+        border-radius: 40px;
+      }
+
+      .search-row>* {
+        flex-basis: 200px;
+      }
+
+      .search-btn .btn {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .hero-banner {
+        height: 400px;
+      }
+
+      .search-widget {
+        padding: 20px 15px;
+      }
+
+      .search-input input,
+      .date-field,
+      .guests-field select {
+        font-size: 0.95rem;
+      }
+
+      .search-btn .btn {
+        padding: 14px 30px;
+        font-size: 1rem;
+      }
+    }
+
+    /* about 3 колонки */
+    /* Новая стилизация секции about (70/30) */
+    .about-new {
+      display: flex;
+      gap: 30px;
+      margin-bottom: 120px;
+    }
+
+    .about-left {
+      flex: 0 0 70%;
+      /* 70% ширина */
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    .about-right {
+      flex: 0 0 30%;
+      /* 30% ширина */
+    }
+
+    .about-right img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 24px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .about-top {
+      display: flex;
+      gap: 30px;
+      /* тон из палитры */
+      border-radius: 24px;
+      padding-top: 0px;
+      padding-left: 30px;
+      padding-bottom: 30px;
+      padding-right: 30px;
+      align-items: stretch;
+    }
+
+    .about-top-left {
+      flex: 1;
+    }
+
+    .about-top-left img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .about-top-right {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .about-top-right h3 {
+      color: #dcc187;
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+
+    .about-top-right p {
+      color: #3d3224;
+      margin-bottom: 1.5rem;
+    }
+
+    .about-top-right .arrow-link {
+      margin-top: auto;
+    }
+
+    /* Нижний блок с преимуществами */
+    .about-bottom {
+     background: rgba(90, 85, 44, 0.1);
+      /* светлый фон как основной */
+      border-radius: 24px;
+      padding: 30px;
+    }
+
+    .section-subtitle {
+      width: 100%;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #3d3224;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 3px solid #3d3224;
+      /* подчёркивание */
+      display: inline-block;
+    }
+
+    .about-bottom-grid {
+      display: flex;
+      gap: 30px;
+    }
+
+    .advantage-item {
+      flex: 1;
+      display: flex;
+      align-items: flex-start;
+      gap: 15px;
+      background-color: rgba(255, 255, 255, 0.85);
+      padding: 20px;
+      border-radius: 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    }
+
+    .advantage-item i {
+      font-size: 2.2rem;
+      color: #3d3224;
+      min-width: 50px;
+      text-align: center;
+    }
+
+    .advantage-item h5 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 5px;
+      color: #3d3224;
+    }
+
+    .advantage-item p {
+      margin-bottom: 0;
+      color: #5a514a;
+      font-size: 0.95rem;
+    }
+
+
+    /* why choose us */
+    .why {
+      margin-bottom: 120px;
+    }
+
+    .why h2 {
+      text-align: center;
+      color: #dcc187;
+    }
+
+    .features-grid {
+      display: flex;
+      gap: 30px;
+      justify-content: center;
+      margin-top: 50px;
+      flex-wrap: wrap;
+    }
+
+    .feature-card {
+      background: white;
+      padding: 40px 30px;
+      border-radius: 30px;
+      flex: 1 1 280px;
+      max-width: 350px;
+      box-shadow: 0 15px 30px rgba(44, 54, 90, 0.08);
+      transition: transform 0.2s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-8px);
+    }
+
+    .feature-card i {
+      font-size: 2.8rem;
+      color: #dcc187;
+      margin-bottom: 25px;
+    }
+
+    .feature-card h3 {
+      font-size: 1.6rem;
+      margin-bottom: 15px;
+    }
+
+    .feature-card p {
+      color: #4a4a5a;
+    }
+
+    /* services / what we offer */
+    /* Новые стили для секции services */
+    .cta-block2 {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 400px;
+      text-align: center;
+      /* выравнивание по центру */
+      margin-bottom: 60px;
+      background-color: rgba(255, 255, 255, 0.85);
+      width: 100%;
+      text-align: center;
+    }
+
+    .services-header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 300px;
+      text-align: center;
+      /* выравнивание по центру */
+      margin-bottom: 60px;
+      background-color: white;
+      width: 100%;
+    }
+
+    .services-superhead {
+      display: inline-block;
+      font-size: 1.2rem;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      background: rgba(90, 85, 44, 0.1);
+      padding: 6px 18px;
+      border-radius: 30px;
+      margin-bottom: 20px;
+    }
+
+    .services-header h2 {
+      color: #dcc187;
+      margin-bottom: 15px;
+    }
+
+    .services-description {
+      max-width: 600px;
+      margin: 0 auto;
+      color: #2d2d3a;
+      font-size: 1.2rem;
+    }
+
+    /* Сетка трёх колонок */
+    .services-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1.2fr;
+      /* пропорции: табы, картинка, детали */
+      gap: 30px;
+      border-radius: 50px;
+      padding: 40px;
+    }
+
+    /* Колонка табов */
+    .service-tabs {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .service-tab {
+      background: #EEE8DF;
+      border: none;
+      padding: 18px 24px;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 1.2rem;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: #3d3224;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .service-tab i {
+      font-size: 1.6rem;
+      width: 32px;
+    }
+
+    .service-tab.active {
+      background: #dcc187;
+      color: #f8f6ed;
+    }
+
+    .service-tab:not(.active) {
+      background-color: rgba(255, 255, 255, 0.85);
+    }
+
+    .service-tab:not(.active):hover {
+      background: #dcc187;
+      color: #f8f6ed;
+    }
+
+    /* Колонка картинки */
+    .service-image {
+      border-radius: 30px;
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(44, 54, 90, 0.2);
+    }
+
+    .service-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Колонка деталей */
+    .service-details {
+      background: #EEE8DF;
+      border-radius: 40px;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .details-superhead {
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #9a928a;
+      margin-bottom: 10px;
+    }
+
+    .service-details h3 {
+      color: #dcc187;
+      font-size: 1.8rem;
+      margin-bottom: 15px;
+      line-height: 1.2;
+    }
+
+    .service-details p {
+      color: #3d3224;
+      margin-bottom: 20px;
+      flex-grow: 1;
+    }
+
+    .service-advantage {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      background: rgba(90, 69, 44, 0.08);
+      padding: 15px 20px;
+      border-radius: 50px;
+      margin-bottom: 25px;
+    }
+
+    .service-advantage i {
+      font-size: 2rem;
+      color: #3d3224;
+      width: 40px;
+    }
+
+    .service-advantage p {
+      margin-bottom: 0;
+      font-weight: 500;
+      color: #3d3224;
+    }
+
+    .service-details .arrow-link {
+      align-self: flex-start;
+      margin-top: auto;
+    }
+
+    .cta-block {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      background-color: #dcc187;
+      color: #f8f6ed;
+      margin-top: 40px;
+      margin-bottom: 40px;
+      padding: 40px;
+      width: 100%;
+      height: 400px;
+    }
+
+    .cta {
+      border: white 1px solid;
+      color: white;
+      padding: 10px 18px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+
+    .cta:hover {
+      opacity: 0.80;
+    }
+
+
+    /* destinations */
+    .destinations {
+      margin-bottom: 120px;
+    }
+
+    .destinations h2 {
+      color: #dcc187;
+      margin-top: 30px;
+    }
+
+    .dest-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+
+    .dest-card {
+      background: white;
+      border-radius: 30px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+    }
+
+    .dest-card img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+    }
+
+    .dest-info {
+      padding: 24px;
+    }
+
+    .dest-info h3 {
+      margin-bottom: 5px;
+    }
+
+    .dest-info .price {
+      color:#dcc187;
+      font-weight: 700;
+      font-size: 1.4rem;
+    }
+
+    /* Слайдер */
+    .slider-wrapper {
+      position: relative;
+      margin-top: 40px;
+      padding: 0 40px;
+      /* чтобы стрелки не выходили за границы */
+    }
+
+    .slider-container {
+      overflow: hidden;
+      border-radius: 30px;
+    }
+
+    .slider-track {
+      display: flex;
+      transition: transform 0.4s ease-in-out;
+      will-change: transform;
+    }
+
+    .dest-card {
+      flex-shrink: 0;
+      background: white;
+      border-radius: 30px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+      margin: 0 15px;
+      transition: box-shadow 0.2s;
+    }
+
+    /* Ширина карточки будет задаваться скриптом, но для предотвращения скачка задаём базовую */
+    .slider-track .dest-card {
+      width: calc(33.333% - 30px);
+    }
+
+    .slider-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #dcc187;
+      color: #f8f6ed  ;
+      border: none;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 32px;
+      line-height: 1;
+      transition: all 0.2s;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .slider-btn:hover {
+      background: #dcc187;
+      transform: translateY(-50%) scale(1.05);
+    }
+
+    .slider-btn.prev {
+      left: 0;
+    }
+
+    .slider-btn.next {
+      right: 0;
+    }
+
+    /* Точки */
+    .slider-dots {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 30px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      background-color: rgba(90, 79, 44, 0.3);
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .dot.active {
+      background-color: #dcc187;
+      transform: scale(1.2);
+    }
+
+    .dot:hover {
+      background-color: #dcc187;
+    }
+
+    /* Адаптив */
+    @media (max-width: 992px) {
+      .slider-wrapper {
+        padding: 0 30px;
+      }
+
+      .slider-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 28px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .slider-wrapper {
+        padding: 0 20px;
+      }
+
+      .slider-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 24px;
+      }
+
+      .dest-card {
+        margin: 0 10px;
+      }
+    }
+
+    /* Убираем лишние отступы у секции */
+    .destinations {
+      margin-bottom: 120px;
+    }
+
+    /* отзывы */
+    .testimonials {
+      margin-bottom: 120px;
+      background: #dad2c5;
+      padding: 70px 0;
+      border-radius: 80px 80px 0 0;
+    }
+
+    .testimonials .container h2 {
+      color: #3d3224;
+    }
+
+    .testi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 30px;
+      margin-top: 50px;
+    }
+
+    .testi-card {
+      background: #EEE8DF;
+      border-radius: 30px;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .testi-card i {
+      color: #dcc187;
+      font-size: 2rem;
+    }
+
+    .testi-card p {
+      font-style: italic;
+    }
+
+    .testi-footer {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .testi-footer img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    /* Слайдер отзывов (используем общие стили, но с уточнением) */
+    .testimonials .slider-wrapper {
+      position: relative;
+      margin-top: 50px;
+      padding: 0 40px;
+    }
+
+    .testimonials .slider-container {
+      overflow: hidden;
+      border-radius: 30px;
+    }
+
+    .testimonials-track {
+      display: flex;
+      transition: transform 0.4s ease-in-out;
+    }
+
+    .testi-card {
+      flex-shrink: 0;
+      background: #EEE8DF;
+      border-radius: 30px;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin: 0 15px;
+      box-sizing: border-box;
+      transition: box-shadow 0.2s;
+    }
+
+    .testi-card i {
+      color: #dcc187;
+      font-size: 2rem;
+    }
+
+    .testi-card p {
+      font-style: italic;
+      margin-bottom: 0;
+    }
+
+    .testi-footer {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-top: auto;
+    }
+
+    .testi-footer img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    /* Кнопки и точки – общие стили уже есть, но адаптируем под отзывы */
+    .testimonials .slider-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #dcc187;
+      color: #f8f6ed;
+      border: none;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 32px;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      transition: all 0.2s;
+    }
+
+    .testimonials .slider-btn:hover {
+      background: #dcc187;
+      transform: translateY(-50%) scale(1.05);
+    }
+
+    .testimonials .slider-btn.prev {
+      left: 0;
+    }
+
+    .testimonials .slider-btn.next {
+      right: 0;
+    }
+
+    .testimonials .slider-dots {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 30px;
+    }
+
+    .testimonials .dot {
+      width: 10px;
+      height: 10px;
+      background-color: rgba(90, 79, 44, 0.3);
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .testimonials .dot.active {
+      background-color: #dcc187;
+      transform: scale(1.2);
+    }
+
+    /* Адаптив для отзывов */
+    @media (max-width: 992px) {
+      .testimonials .slider-wrapper {
+        padding: 0 30px;
+      }
+
+      .testimonials .slider-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 28px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .testimonials .slider-wrapper {
+        padding: 0 20px;
+      }
+
+      .testimonials .slider-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 24px;
+      }
+
+      .testi-card {
+        margin: 0 10px;
+        padding: 20px;
+      }
+    }
+
+    footer {
+    background-color: #dcc187;
+    color: #A67B5B;
+    padding: 60px 0 30px;
+    border-radius: 50px 50px 0 0;
+    margin-top: 40px;
+}
+
+.footer-inner {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1.5fr;
+    gap: 40px;
+}
+
+.footer-col p {
+    color: #A67B5B;
+}
+
+.footer-col ul {
+    list-style: none;
+}
+
+.footer-col li {
+    margin-bottom: 12px;
+}
+
+.footer-col a {
+    color:#A67B5B;
+    transition: color 0.2s;
+}
+
+.footer-col a:hover {
+    color: #f8f6edc6;
+}
+
+.social-icons {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.social-icons a {
+    background: rgba(167, 115, 38, 0.1);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+}
+
+.copyright-container {
+    color: #3d322475;
+    text-align: center;
+    margin-top: 50px;
+    padding-top: 30px;
+    border-top: 1px solid #3d322475;
+}
+
+/* === Адаптивность подвала === */
+@media (max-width: 768px) {
+    .footer-inner {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .footer-inner {
+        grid-template-columns: 1fr;
+    }
+}
+
+    /* Адаптивность */
+    /* Адаптация блока услуг для мобильных устройств */
+    @media (max-width: 992px) {
+      .services-grid {
+        gap: 20px;
+        padding: 30px;
+      }
+
+      .service-tab {
+        padding: 14px 20px;
+        font-size: 1rem;
+      }
+
+      .service-details h3 {
+        font-size: 1.5rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .services-grid {
+        grid-template-columns: 1fr;
+        /* одна колонка */
+        padding: 20px;
+      }
+
+      /* Порядок элементов: табы → картинка → детали */
+      .service-tabs {
+        order: 1;
+        flex-direction: row;
+        overflow-x: auto;
+        gap: 10px;
+        padding-bottom: 10px;
+      }
+
+      .service-tab {
+        white-space: nowrap;
+        padding: 12px 18px;
+        font-size: 0.9rem;
+        gap: 8px;
+      }
+
+      .service-tab i {
+        font-size: 1.2rem;
+        width: 24px;
+      }
+
+      .service-image {
+        order: 2;
+        max-height: 280px;
+      }
+
+      .service-details {
+        order: 3;
+        padding: 20px;
+      }
+
+      .service-details h3 {
+        font-size: 1.4rem;
+      }
+
+      .service-advantage {
+        padding: 12px 16px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .services-grid {
+        padding: 10px;
+      }
+
+      .service-tab {
+        padding: 8px 14px;
+        font-size: 0.8rem;
+      }
+
+      .service-details {
+        padding: 15px;
+      }
+
+      .service-details h3 {
+        font-size: 1.2rem;
+      }
+
+      .details-superhead {
+        font-size: 0.7rem;
+      }
+
+      .service-advantage i {
+        font-size: 1.4rem;
+        width: 30px;
+      }
+    }
+
+    @media (max-width: 1000px) {
+      .about-new {
+        flex-direction: column;
+      }
+
+      .about-left,
+      .about-right {
+        flex: auto;
+        width: 100%;
+      }
+
+      .about-right img {
+        height: 400px;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .about-top {
+        flex-direction: column;
+      }
+
+      .about-top-left,
+      .about-top-right {
+        width: 100%;
+      }
+
+      .about-bottom-grid {
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 1000px) {
+      h1 {
+        font-size: 3.5rem;
+      }
+
+      .hero-title {
+        font-size: 4rem;
+      }
+
+      .services-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 800px) {
+      .header-inner {
+        flex-wrap: wrap;
+        row-gap: 15px;
+      }
+
+      .nav-menu {
+        order: 3;
+        width: 100%;
+        justify-content: center;
+        gap: 20px;
+      }
+
+      .hero-top {
+        grid-template-columns: 1fr;
+      }
+
+      .about {
+        grid-template-columns: 1fr;
+      }
+
+      .about-col img {
+        height: 300px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 0 20px;
+      }
+
+      /* на маленьких экранах оставляем 20px */
+      h1 {
+        font-size: 2.8rem;
+      }
+
+      .btn {
+        padding: 12px 28px;
+      }
+
+      .services-grid {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- хедер -->
+  <header>
+    <div class="container header-inner">
+      <div style="display: flex; align-items: center;">
+        <span class="logo">
+          <img src="images/logo/IMG_20260412_204015_074.png" alt="" width="40px" height="40px">
+          БЕЛАЯ ЛАДЬЯ</span>
+      </div>
+      <nav class="nav-menu">
+        <a href="#hero">Главная</a>
+        <a href="aboutus.html">О нас</a>
+        <a href="#services">Услуги</a>
+        <a href="tour.html">Туры</a>
+        <a href="#contacts">Контакты</a>
+      </nav>
+      <div class="header-icons">
+        <a href="account.html"><i class="far fa-user"></i></a>
+        <a href="basket.html" style="position: relative;">
+          <i class="fas fa-shopping-cart"></i>
+        </a>
+      </div>
+      <button class="burger-menu" aria-label="Открыть меню">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO СЕКЦИЯ -->
+    <section id="hero" class="hero container">
+      <div class="hero-top">
+        <div>
+          <h1 class="hero-title">ОТКРОЙ<br>КАЛМЫКИЮ</h1>
+        </div>
+        <div class="hero-right">
+          <p>Организуем путешествия по буддийским храмам, солёным озёрам и заповедным уголкам республики.</p>
+          <a href="tour.html" class="arrow-link">Выбрать направление <i class="fas fa-arrow-right"></i></a>
+        </div>
+      </div>
+      <div class="hero-banner">
+        <!-- Оверлей с виджетом внутри баннера -->
+        <div class="hero-overlay">
+          <div class="search-widget">
+            <div class="search-row">
+              <div class="search-input">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Куда поедем?" id="searchDestination">
+              </div>
+              <div class="date-field">
+                <i class="far fa-calendar"></i>
+                <input type="text" placeholder="Заезд" id="startDate" onfocus="(this.type='date')"
+                  onblur="(this.type='text')">
+              </div>
+              <div class="date-field">
+                <i class="far fa-calendar-check"></i>
+                <input type="text" placeholder="Выезд" id="endDate" onfocus="(this.type='date')"
+                  onblur="(this.type='text')">
+              </div>
+              <div class="guests-field">
+                <i class="fas fa-users"></i>
+                <select id="guests">
+                  <option>1 турист</option>
+                  <option selected>2 туриста</option>
+                  <option>3 туриста</option>
+                  <option>4+</option>
+                </select>
+              </div>
+              <div class="search-btn">
+                <button class="btn" id="searchButton">Найти туры</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- О КОМПАНИИ (3 колонки) -->
+    <!-- О КОМПАНИИ (новая структура 70/30) -->
+    <section id="about" class="container about-new">
+      <!-- Левая колонка 70% -->
+      <div class="about-left">
+        <!-- Верхний блок (60% высоты) -->
+        <div class="about-top">
+          <div class="about-top-left">
+            <img src="images/IMG_20260412_191333_265.jpg" alt="Маныч">
+          </div>
+          <div class="about-top-right">
+            <span class="services-superhead">О НАС</span>
+            <h3>Максимальный уровень комфорта, удобства и сервиса</h3>
+            <p>Мы создаём путешествия, которые запоминаются на всю жизнь. Мы — проводники в мир калмыцкой культуры. Индивидуальный подход, премиальный транспорт и круглосуточная поддержка.</p>
+            <a href="aboutus.html" class="arrow-link">Подробнее о нас <i
+                class="fas fa-arrow-right"></i></a>
+          </div>
+        </div>
+        <!-- Нижний блок (40% высоты) с преимуществами -->
+        <div class="about-bottom">
+          <h4 class="section-subtitle">Почему мы</h4>
+          <div class="about-bottom-grid">
+            <div class="advantage-item">
+              <i class="fas fa-shield-alt"></i>
+              <div>
+                <h5>Надёжность</h5>
+                <p>Все туры лицензированы, страховка включена.</p>
+              </div>
+            </div>
+            <div class="advantage-item">
+              <i class="fas fa-clock"></i>
+              <div>
+                <h5>Круглосуточная поддержка</h5>
+                <p>Поможем в любой точке мира 24/7.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Правая колонка 30% с картинкой -->
+      <div class="about-right">
+        <img src="images/1776016616559.jpg" alt="Калмыкия">
+      </div>
+    </section>
+
+    <section class="cta-block2">
+      <span class="services-superhead">Сервис</span>
+      <div class="container2">
+        <h2>Что мы предлагаем?</h2>
+        <p class="services-description">Индивидуальные и сборные туры, трансферы, маршруты для маломобильных
+          путешественников.</p>
+      </div>
+    </section>
+
+    <!-- УСЛУГИ (ЧТО МЫ ПРЕДЛАГАЕМ) -->
+    <!-- УСЛУГИ (новая структура) -->
+    <section id="services" class="container services">
+
+
+      <!-- Второй контейнер: трёхколоночная сетка -->
+      <div class="services-grid" id="servicesGrid">
+        <!-- Колонка 1: табы услуг -->
+        <div class="service-tabs">
+          <button class="service-tab active" data-tab="private"><i class="fas fa-car"></i> Индивидуальные туры</button>
+          <button class="service-tab" data-tab="scheduled"><i class="fas fa-calendar-check"></i> Сборные группы</button>
+          <button class="service-tab" data-tab="transfers"><i class="fas fa-shuttle-van"></i> Трансферы</button>
+          <button class="service-tab" data-tab="wheelchair"><i class="fas fa-wheelchair"></i> Доступная среда</button>
+        </div>
+
+        <!-- Колонка 2: картинка -->
+        <div class="service-image">
+          <img src="images/26213a16092340e43f92e9432f29589a.jpg" alt="Автобус" id="serviceImage">
+        </div>
+
+        <!-- Колонка 3: детали услуги -->
+        <div class="service-details">
+          <span class="details-superhead">Услуги</span>
+          <h3 id="serviceTitle">Индивидуальные туры на любой вкус</h3>
+          <p id="serviceDesc">Персонализированное путешествие так как нужно именно вам. Вы сами выбираете маршрут.</p>
+          <div class="service-advantage" id="serviceAdvantage">
+            <i class="fas fa-user-check"></i>
+            <p>Гибкий маршрут и персональный водитель-гид</p>
+          </div>
+          <a href="tour.html" class="arrow-link" id="serviceLink">Выбрать
+            тур <i class="fas fa-arrow-right"></i></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-block">
+      <div class="container">
+        <h2>Начни свое путешествие сегодня</h2>
+        Исследуй самые волшебные и незабываемые места
+        <br>
+        <br>
+        <a class="cta" href="tour.html">Найди свой тур</a>
+      </div>
+    </section>
+
+    <!-- ПОПУЛЯРНЫЕ НАПРАВЛЕНИЯ -->
+    <section id="tours" class="container destinations">
+      <h2>Популярные направления</h2>
+      <span class="services-superhead">самые горячие туры</span>
+
+      <!-- Слайдер -->
+      <div class="slider-wrapper">
+        <div class="slider-container">
+          <div class="slider-track">
+            <!-- Карточки (всего 9) -->
+            <div class="dest-card">
+              <img src="images/orig.jpg"
+                alt="Огонь, вода и степь<">
+              <div class="dest-info">
+                <h3>Огонь, вода и степь</h3>
+                <p>Cолёное озеро, бесконечная степь и огонь на воде</p>
+                <span class="price">от 78 000 ₽</span>
+              </div>
+            </div>
+            <div class="dest-card">
+              <img src="images/62e7bb0bae5ac95d8300e865.jpg"
+                alt="Лотосы и вода Каспия">
+              <div class="dest-info">
+                <h3>Лотосы и вода Каспия</h3>
+                <p>Водный тур с лодками, лотосами и мягким светом</p>
+                <span class="price">от 100 000 ₽</span>
+              </div>
+            </div>
+            <div class="dest-card">
+              <img src="images/kalmykia-1.jpg" alt="Песок и ветер">
+              <div class="dest-info">
+                <h3>Песок и ветер</h3>
+                <p> Тур про движение: барханы, ветер и дикая степь</p>
+                <span class="price">от 90 000 ₽</span>
+              </div>
+            </div>
+            <div class="dest-card">
+              <img src="images/IMG_20260412_191333_265.jpg" alt="Степь и животные">
+              <div class="dest-info">
+                <h3>Степь и животные</h3>
+                <p>Лошади, верблюды и дикая природа.</p>
+                <span class="price">от 65 000 ₽</span>
+              </div>
+            </div>
+            <div class="dest-card">
+              <img src="images/qpY4g3hKyj-7UR-VPmOiYMC_tf8-1920.jpg"
+                alt="Дороги и горизонты">
+              <div class="dest-info">
+                <h3>Дороги и горизонты</h3>
+                <p>Тур про дорогу и спокойствие.</p>
+                <span class="price">от 89 000 ₽</span>
+              </div>
+            </div>
+            <div class="dest-card">
+              <img src="images/451bd1dbbab439e612970ef553e07cf5.jpg" alt="Буддизм и тишина">
+              <div class="dest-info">
+                <h3>Буддизм и тишина</h3>
+                <p>Храмы и пустота степи — баланс внутреннего и внешнего.</p>
+                <span class="price">от 32 000 ₽</span>
+              </div>
+            </div>
+            <div class="dest-card">
+              <img src="images/Lake_Manych-Gudilo_satellite-photo.png" alt=" Вода и закаты">
+              <div class="dest-info">
+                <h3>Вода и закаты</h3>
+                <p>Два разных водных мира — солёный и живой.</p>
+                <span class="price">от 45 000 ₽</span>
+              </div>
+            </div>
+            <div class="dest-card">
+              <img src="images/771516_main.jpg"
+                alt="Экстрим степи">
+              <div class="dest-info">
+                <h3>Экстрим степи</h3>
+                <p>Самый «жёсткий» тур — ветер, песок и огонь.</p>
+                <span class="price">от 280 000 ₽</span>
+              </div>
+            </div>
+            <div class="dest-card">
+              <img src="images/еда.jpg" alt=" Гастрономическая Калмыкия">
+              <div class="dest-info">
+                <h3> Гастро-тур Калмыкия</h3>
+                <p>Погружение в кухню и традиции региона</p>
+                <span class="price">от 135 000 ₽</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Кнопки навигации -->
+        <button class="slider-btn prev" aria-label="Предыдущий слайд">‹</button>
+        <button class="slider-btn next" aria-label="Следующий слайд">›</button>
+      </div>
+
+      <!-- Точки (пагинация) -->
+      <div class="slider-dots"></div>
+    </section>
+
+    <!-- ОТЗЫВЫ -->
+    <section class="testimonials">
+      <div class="container">
+        <h2>Отзывы путешественников</h2>
+        <span class="services-superhead">что говорят наши клиенты?</span>
+
+        <!-- Слайдер отзывов -->
+        <div class="slider-wrapper testimonials-slider">
+          <div class="slider-container">
+            <div class="slider-track testimonials-track">
+              <!-- 9 карточек -->
+              <div class="testi-card">
+                <i class="fas fa-quote-right"></i>
+                <p>“Никогда не думала, что в России есть такая красота. Бескрайняя степь, хурулы, верблюды! Отдельное спасибо гиду Баатру за рассказы.”</p>
+                <div class="testi-footer">
+                  <img src="images/1.jpg" alt="фото">
+                  <div><strong>Елена</strong><br>тур "Полная Калмыкия"</div>
+                </div>
+              </div>
+              <div class="testi-card">
+                <i class="fas fa-quote-right"></i>
+                <p>“Брали индивидуальный тур на Маныч. Видели табуны лошадей, розовых пеликанов, потрясающие закаты. Всё было продумано до мелочей.”</p>
+                <div class="testi-footer">
+                  <img src="images/2.jpg" alt="фото">
+                  <div><strong>Алексей</strong><br>тур "Огонь, вода и степь"</div>
+                </div>
+              </div>
+              <div class="testi-card">
+                <i class="fas fa-quote-right"></i>
+                <p>“Очень понравилась калмыцкая кухня: бёриги, джомба, махан. Гид помог выбрать лучшие кафе. Вернёмся обязательно на фестиваль тюльпанов.”</p>
+                <div class="testi-footer">
+                  <img src="images/3.jpg" alt="фото">
+                  <div><strong>Марина</strong><br>тур "Гастрономическая Калмыкия"</div>
+                </div>
+              </div>
+              <div class="testi-card">
+                <i class="fas fa-quote-right"></i>
+                <p>“Паломнический тур превзошёл ожидания. Посетили несколько хурулов, встретились с монахами. Очень душевно и познавательно.”</p>
+                <div class="testi-footer">
+                  <img src="images/5.jpg" alt="фото">
+                  <div><strong>Ирина</strong><br>тур "Буддизм и тишина"</div>
+                </div>
+              </div>
+              <div class="testi-card">
+                <i class="fas fa-quote-right"></i>
+                <p>“Экскурсия в Черные земли – это было волшебно. Гид показал места, о которых не пишут в путеводителях.”</p>
+                <div class="testi-footer">
+                  <img src="images/4.jpg" alt="фото">
+                  <div><strong>Дмитрий</strong><br>тур "Песок и ветер"</div>
+                </div>
+              </div>
+              <div class="testi-card">
+                <i class="fas fa-quote-right"></i>
+                <p>“Доступная среда в туре по Лагани – всё продумано до мелочей. Спасибо за внимательность!”</p>
+                <div class="testi-footer">
+                  <img src="images/6.jpg" alt="фото">
+                  <div><strong>Татьяна</strong><br>тур "Лотосы и вода Каспия"</div>
+                </div>
+              </div>
+              <div class="testi-card">
+                <i class="fas fa-quote-right"></i>
+                <p>“Сборная группа в Калмыкию – отличный способ путешествовать недорого. Познакомились с классными
+                  людьми.”</p>
+                <div class="testi-footer">
+                  <img src="images/Hasan Ali.jpeg" alt="фото">
+                  <div><strong>Олег</strong><br>тур "Полная Калмыкия"</div>
+                </div>
+              </div>
+              <div class="testi-card">
+                <i class="fas fa-quote-right"></i>
+                <p>“Трансфер из аэропорта – машина подали прямо к выходу, водитель помог с чемоданами.”</p>
+                <div class="testi-footer">
+                  <img src="images/9.jpg" alt="фото">
+                  <div><strong>Светлана</strong><br>тур "Полная Калмыкия"</div>
+                </div>
+              </div>
+              <div class="testi-card">
+                <i class="fas fa-quote-right"></i>
+                <p>“Индивидуальный тур по Манычу – лучший отпуск! Маршрут составили под наши пожелания.”</p>
+                <div class="testi-footer">
+                  <img src="images/10.jpg" alt="фото">
+                  <div><strong>Михаил</strong><br>тур "Огонь, вода и степь"</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Кнопки навигации -->
+          <button class="slider-btn prev testimonial-prev" aria-label="Предыдущий отзыв">‹</button>
+          <button class="slider-btn next testimonial-next" aria-label="Следующий отзыв">›</button>
+        </div>
+
+        <!-- Точки пагинации -->
+        <div class="slider-dots testimonial-dots"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ФУТЕР -->
+  <footer id="contacts">
+    <div class="container footer-inner">
+      <div class="footer-col">
+        <h3 style="color:#A67B5B;">БЕЛАЯ ЛАДЬЯ</h3>
+        <p>Туры по Калмыкии с душой. Степь, буддизм, традиции. Индивидуально и в группах.</p>
+        <div class="social-icons">
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-telegram"></i></a>
+          <a href="#"><i class="fab fa-whatsapp"></i></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Навигация</h4>
+        <ul>
+          <li><a href="#">Главная</a></li>
+          <li><a href="aboutus.html">О нас</a></li>
+          <li><a href="#services">Трансферы</a></li>
+          <li><a href="tour.html">Туры</a></li>
+          <li><a href="#contacts">Контакты</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Поддержка</h4>
+        <ul>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">Блог</a></li>
+          <li><a href="#">Политика</a></li>
+          <li><a href="#">Документы</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Контакты</h4>
+        <ul>
+          <li><i class="fas fa-phone"></i><a href="tel:+7(495)123-45-67"> +7 (961) 549-56-14</a></li>
+          <li><i class="fas fa-envelope"></i><a href="mailto:misurinaolga583@gmail.com"> misurinaolga583@gmail.com</a></li>
+          <li><i class="fas fa-map-pin"></i> Элиста, ул. Хрущева 11</li>
+        </ul>
+      </div>
+    </div>
+    <div class="copyright-container">
+      © 2026 БЕЛАЯ ЛАДЬЯ — путешествия по России, Европе, Азии. Все права защищены.
+    </div>
+  </footer>
+
+  <!-- НЕБОЛЬШОЙ JS ДЛЯ ИНТЕРАКТИВНЫХ ВКЛАДОК И ПЛАВНОГО СКРОЛЛА -->
+  <script>
+    (function () {
+      // 1. Плавный скролл к секциям по клику в меню
+      const navLinks = document.querySelectorAll('.nav-menu a');
+      navLinks.forEach(link => {
+        link.addEventListener('click', function (e) {
+          const hash = this.getAttribute('href');
+          if (hash && hash.startsWith('#')) {
+            e.preventDefault();
+            const target = document.querySelector(hash);
+            if (target) {
+              target.scrollIntoView({ behavior: 'smooth' });
+            }
+          }
+        });
+      });
+
+      // 2. Интерактивные вкладки в блоке "Что мы предлагаем?"
+      const tabs = document.querySelectorAll('.service-tab');
+      const previewImg = document.getElementById('previewImg');
+      const previewTitle = document.getElementById('previewTitle');
+      const previewDesc = document.getElementById('previewDesc');
+      const previewLink = document.getElementById('previewLink');
+
+      // Данные для каждой вкладки на русском
+      const tabData = {
+        private: {
+          img: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=600&auto=format',
+          title: 'Индивидуальные туры на Mercedes Vito',
+          desc: 'Персонализированное путешествие на комфортабельном микроавтобусе с водителем. Вы сами выбираете маршрут.',
+          link: '#'
+        },
+        scheduled: {
+          img: 'https://images.unsplash.com/photo-1591025207163-942350e47db6?w=600&auto=format',
+          title: 'Сборные групповые экскурсии',
+          desc: 'Присоединяйтесь к нашим небольшим группам с фиксированными маршрутами. Новые знакомства и общие впечатления.',
+          link: '#'
+        },
+        transfers: {
+          img: 'https://images.unsplash.com/photo-1569949381669-ecf31ae8e613?w=600&auto=format',
+          title: 'Комфортные трансферы',
+          desc: 'Встреча в аэропорту, порту или отеле. Автомобили бизнес-класса, детские кресла, любой багаж.',
+          link: '#'
+        },
+        wheelchair: {
+          img: 'https://images.unsplash.com/photo-1584636633440-6f72682e911e?w=600&auto=format',
+          title: 'Доступная среда',
+          desc: 'Специально оборудованные автомобили и маршруты для путешественников с ограниченной мобильностью.',
+          link: '#'
+        }
+      };
+
+      tabs.forEach(tab => {
+        tab.addEventListener('click', function () {
+          tabs.forEach(t => t.classList.remove('active'));
+          this.classList.add('active');
+
+          const tabKey = this.dataset.tab;
+          const data = tabData[tabKey];
+          if (data) {
+            previewImg.src = data.img;
+            previewTitle.innerText = data.title;
+            previewDesc.innerText = data.desc;
+            previewLink.href = data.link;
+          }
+        });
+      });
+
+      // 3. Кнопка бронирования
+      const bookBtn = document.querySelector('.header-cta .btn');
+      if (bookBtn) {
+        bookBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          alert('Спасибо за интерес! В боевой версии здесь откроется форма бронирования.');
+        });
+      }
+
+      // 4. Кнопка под превью
+      if (previewLink) {
+        previewLink.addEventListener('click', (e) => {
+          e.preventDefault();
+          alert('Переход к списку туров (демо)');
+        });
+      }
+    })();
+
+    // 6. Бургер-меню
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const burger = document.querySelector('.burger-menu');
+      const navMenu = document.querySelector('.nav-menu');
+      const body = document.body;
+
+      if (burger && navMenu) {
+        burger.addEventListener('click', function () {
+          burger.classList.toggle('active');
+          navMenu.classList.toggle('active');
+          body.classList.toggle('menu-open');
+        });
+
+        // Закрытие меню при клике на ссылку
+        const navLinks = navMenu.querySelectorAll('a');
+        navLinks.forEach(link => {
+          link.addEventListener('click', () => {
+            burger.classList.remove('active');
+            navMenu.classList.remove('active');
+            body.classList.remove('menu-open');
+          });
+        });
+      }
+    });
+    //7. Переключение услуг
+    document.addEventListener('DOMContentLoaded', function () {
+      // Данные для каждого таба
+      const serviceData = {
+        private: {
+          image: 'images/26213a16092340e43f92e9432f29589a.jpg',
+          alt: 'Только индивидуальные туры',
+          title: 'Индивидуальные туры на любой вкус',
+          desc: 'Персонализированное путешествие так как нужно именно вам. Вы сами выбираете маршрут.',
+          advantageIcon: 'fas fa-user-check',
+          advantageText: 'Гибкий маршрут и персональный водитель-гид',
+          link: 'tour.html',
+          linkText: 'Выбрать тур',
+          alertMsg: 'Смотреть все индивидуальные туры'
+        },
+        scheduled: {
+          image: 'images/1776017148882.jpg', // замените на реальный путь
+          alt: 'Сборная группа',
+          title: 'Сборные группы на комфортабельных автобусах',
+          desc: 'Присоединяйтесь к готовым экскурсионным группам. Экономный вариант с насыщенной программой.',
+          advantageIcon: 'fas fa-users',
+          advantageText: 'Готовые маршруты и новые знакомства',
+          link: 'tour.html',
+          linkText: 'Выбрать тур',
+          alertMsg: 'Смотреть все сборные туры'
+        },
+        transfers: {
+          image: 'images/1776017768610.jpg', // замените на реальный путь
+          alt: 'Трансфер',
+          title: 'Трансферы любой сложности',
+          desc: 'Встреча в аэропорту, переезды между городами, поездки на мероприятия. Автомобили разного класса.',
+          advantageIcon: 'fas fa-clock',
+          advantageText: 'Фиксированная цена, пунктуальность, комфорт',
+          link: 'tour.html',
+          linkText: 'Заказать трансфер',
+          alertMsg: 'Заказать трансфер'
+        },
+        wheelchair: {
+          image: 'images/1776018362245.jpg', // замените на реальный путь
+          alt: 'Доступная среда',
+          title: 'Туры для маломобильных путешественников',
+          desc: 'Специально оборудованные автомобили, помощь гида, адаптированные маршруты без барьеров.',
+          advantageIcon: 'fas fa-wheelchair',
+          advantageText: 'Безбарьерная среда и внимание к каждому гостю',
+          link: 'tour.html',
+          linkText: 'Подробнее',
+          alertMsg: 'Узнать о доступных турах'
+        }
+      };
+
+      // Элементы, которые будем обновлять
+      const serviceImage = document.getElementById('serviceImage');
+      const serviceTitle = document.getElementById('serviceTitle');
+      const serviceDesc = document.getElementById('serviceDesc');
+      const serviceAdvantage = document.getElementById('serviceAdvantage'); // контейнер с иконкой и текстом
+      const serviceLink = document.getElementById('serviceLink');
+
+      // Функция обновления содержимого
+      function updateServiceContent(tabId) {
+        const data = serviceData[tabId];
+        if (!data) return;
+
+        // Меняем картинку
+        if (serviceImage) {
+          serviceImage.src = data.image;
+          serviceImage.alt = data.alt;
+        }
+
+        // Меняем заголовок и описание
+        if (serviceTitle) serviceTitle.textContent = data.title;
+        if (serviceDesc) serviceDesc.textContent = data.desc;
+
+        // Обновляем блок преимущества
+        if (serviceAdvantage) {
+          const icon = serviceAdvantage.querySelector('i');
+          const textP = serviceAdvantage.querySelector('p');
+          if (icon) {
+            // Заменяем классы иконки
+            icon.className = ''; // очищаем
+            icon.classList.add(...data.advantageIcon.split(' '));
+          }
+          if (textP) textP.textContent = data.advantageText;
+        }
+
+        // Обновляем ссылку
+        if (serviceLink) {
+          serviceLink.href = data.link;
+          // Меняем текст ссылки, оставляя стрелку
+          const linkText = serviceLink.childNodes[0]?.nodeType === 3 ? serviceLink.childNodes[0] : null;
+          if (linkText) linkText.textContent = data.linkText + ' ';
+          else serviceLink.innerHTML = `${data.linkText} <i class="fas fa-arrow-right"></i>`;
+
+          // Убираем старый onclick и добавляем новый
+          serviceLink.removeAttribute('onclick');
+          serviceLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            alert(data.alertMsg);
+          });
+        }
+      }
+
+      // Обработчики кликов на табы
+      const tabs = document.querySelectorAll('.service-tab');
+      tabs.forEach(tab => {
+        tab.addEventListener('click', function () {
+          // Убираем active у всех табов
+          tabs.forEach(t => t.classList.remove('active'));
+          // Добавляем active текущему
+          this.classList.add('active');
+          // Получаем идентификатор таба
+          const tabId = this.getAttribute('data-tab');
+          // Обновляем контент
+          updateServiceContent(tabId);
+        });
+      });
+    });
+    //8. Слайдер туров
+    document.addEventListener('DOMContentLoaded', function () {
+      const track = document.querySelector('.slider-track');
+      const cards = Array.from(document.querySelectorAll('.dest-card'));
+      const prevBtn = document.querySelector('.slider-btn.prev');
+      const nextBtn = document.querySelector('.slider-btn.next');
+      const dotsContainer = document.querySelector('.slider-dots');
+
+      if (!track || cards.length === 0) return;
+
+      let currentPage = 0;
+      let slidesPerView = 3; // по умолчанию, будет переопределено при resize
+
+      // Функция определения количества видимых карточек в зависимости от ширины окна
+      function getSlidesPerView() {
+        if (window.innerWidth <= 768) return 1;
+        if (window.innerWidth <= 992) return 2;
+        return 3;
+      }
+
+      // Обновление ширины карточек
+      function setCardWidth() {
+        const containerWidth = track.parentElement.clientWidth;
+        const cardMargin = parseFloat(getComputedStyle(cards[0]).marginLeft) * 2; // левый + правый
+        const newWidth = (containerWidth - (slidesPerView * cardMargin)) / slidesPerView;
+        cards.forEach(card => {
+          card.style.width = `${newWidth}px`;
+        });
+        return newWidth;
+      }
+
+      // Получение общего количества страниц
+      function getTotalPages() {
+        return Math.ceil(cards.length / slidesPerView);
+      }
+
+      // Обновление позиции слайдера
+      function updateSlider() {
+        const cardWidth = cards[0].offsetWidth;
+        const cardMargin = parseFloat(getComputedStyle(cards[0]).marginLeft);
+        const slideDistance = (cardWidth + cardMargin * 2) * currentPage * slidesPerView;
+        track.style.transform = `translateX(-${slideDistance}px)`;
+
+        // Активная точка
+        const dots = document.querySelectorAll('.dot');
+        dots.forEach((dot, idx) => {
+          dot.classList.toggle('active', idx === currentPage);
+        });
+      }
+
+      // Создание точек пагинации
+      function createDots() {
+        const total = getTotalPages();
+        dotsContainer.innerHTML = '';
+        for (let i = 0; i < total; i++) {
+          const dot = document.createElement('div');
+          dot.classList.add('dot');
+          if (i === currentPage) dot.classList.add('active');
+          dot.addEventListener('click', () => {
+            currentPage = i;
+            updateSlider();
+          });
+          dotsContainer.appendChild(dot);
+        }
+      }
+
+      // Переключение на следующую страницу
+      function nextPage() {
+        const total = getTotalPages();
+        if (currentPage < total - 1) {
+          currentPage++;
+        } else {
+          currentPage = 0; // зацикливание
+        }
+        updateSlider();
+      }
+
+      // Переключение на предыдущую страницу
+      function prevPage() {
+        const total = getTotalPages();
+        if (currentPage > 0) {
+          currentPage--;
+        } else {
+          currentPage = total - 1; // зацикливание
+        }
+        updateSlider();
+      }
+
+      // Обновление слайдера при изменении размера окна
+      let resizeTimeout;
+      function handleResize() {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          const newSlidesPerView = getSlidesPerView();
+          if (newSlidesPerView !== slidesPerView) {
+            slidesPerView = newSlidesPerView;
+            setCardWidth();
+            // Корректируем текущую страницу, чтобы не выходить за границы
+            const total = getTotalPages();
+            if (currentPage >= total) currentPage = total - 1;
+            if (currentPage < 0) currentPage = 0;
+            createDots();
+            updateSlider();
+          } else {
+            setCardWidth();
+            updateSlider();
+          }
+        }, 150);
+      }
+
+      // Навешиваем обработчики
+      prevBtn.addEventListener('click', prevPage);
+      nextBtn.addEventListener('click', nextPage);
+      window.addEventListener('resize', handleResize);
+
+      // Инициализация
+      slidesPerView = getSlidesPerView();
+      setCardWidth();
+      createDots();
+      updateSlider();
+    });
+
+    // Слайдер отзывов
+    document.addEventListener('DOMContentLoaded', function () {
+      const track = document.querySelector('.testimonials-track');
+      const cards = Array.from(document.querySelectorAll('.testi-card'));
+      const prevBtn = document.querySelector('.testimonial-prev');
+      const nextBtn = document.querySelector('.testimonial-next');
+      const dotsContainer = document.querySelector('.testimonial-dots');
+
+      if (!track || cards.length === 0) return;
+
+      let currentPage = 0;
+      let slidesPerView = 3;
+
+      function getSlidesPerView() {
+        if (window.innerWidth <= 768) return 1;
+        if (window.innerWidth <= 992) return 2;
+        return 3;
+      }
+
+      function setCardWidth() {
+        const containerWidth = track.parentElement.clientWidth;
+        const cardMargin = parseFloat(getComputedStyle(cards[0]).marginLeft) * 2;
+        const newWidth = (containerWidth - (slidesPerView * cardMargin)) / slidesPerView;
+        cards.forEach(card => {
+          card.style.width = `${newWidth}px`;
+        });
+      }
+
+      function getTotalPages() {
+        return Math.ceil(cards.length / slidesPerView);
+      }
+
+      function updateSlider() {
+        const cardWidth = cards[0].offsetWidth;
+        const cardMargin = parseFloat(getComputedStyle(cards[0]).marginLeft);
+        const slideDistance = (cardWidth + cardMargin * 2) * currentPage * slidesPerView;
+        track.style.transform = `translateX(-${slideDistance}px)`;
+
+        const dots = document.querySelectorAll('.testimonial-dots .dot');
+        dots.forEach((dot, idx) => {
+          dot.classList.toggle('active', idx === currentPage);
+        });
+      }
+
+      function createDots() {
+        const total = getTotalPages();
+        dotsContainer.innerHTML = '';
+        for (let i = 0; i < total; i++) {
+          const dot = document.createElement('div');
+          dot.classList.add('dot');
+          if (i === currentPage) dot.classList.add('active');
+          dot.addEventListener('click', () => {
+            currentPage = i;
+            updateSlider();
+          });
+          dotsContainer.appendChild(dot);
+        }
+      }
+
+      function nextPage() {
+        const total = getTotalPages();
+        currentPage = (currentPage + 1) % total;
+        updateSlider();
+      }
+
+      function prevPage() {
+        const total = getTotalPages();
+        currentPage = (currentPage - 1 + total) % total;
+        updateSlider();
+      }
+
+      let resizeTimeout;
+      function handleResize() {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          const newSlidesPerView = getSlidesPerView();
+          if (newSlidesPerView !== slidesPerView) {
+            slidesPerView = newSlidesPerView;
+            setCardWidth();
+            const total = getTotalPages();
+            if (currentPage >= total) currentPage = total - 1;
+            if (currentPage < 0) currentPage = 0;
+            createDots();
+            updateSlider();
+          } else {
+            setCardWidth();
+            updateSlider();
+          }
+        }, 150);
+      }
+
+      prevBtn.addEventListener('click', prevPage);
+      nextBtn.addEventListener('click', nextPage);
+      window.addEventListener('resize', handleResize);
+
+      // Инициализация
+      slidesPerView = getSlidesPerView();
+      setCardWidth();
+      createDots();
+      updateSlider();
+    });
+
+    //Виджет поиска
+
+    document.getElementById('searchButton').addEventListener('click', () => {
+      const destination = document.getElementById('searchDestination').value;
+      const startDate = document.getElementById('startDate').value;
+      const endDate = document.getElementById('endDate').value;
+      const guests = document.getElementById('guests').value;
+      const params = new URLSearchParams();
+      if (destination) params.set('q', destination);
+      if (startDate) params.set('start', startDate);
+      if (endDate) params.set('end', endDate);
+      if (guests) params.set('guests', guests);
+      window.location.href = `tour.html?${params.toString()}`;
+    });
+  </script>
+</body>
+
+</html>
