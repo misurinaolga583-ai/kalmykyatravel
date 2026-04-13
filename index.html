@@ -1939,49 +1939,7 @@
       const previewLink = document.getElementById('previewLink');
 
       // Данные для каждой вкладки на русском
-      const tabData = {
-        private: {
-          img: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=600&auto=format',
-          title: 'Индивидуальные туры на Mercedes Vito',
-          desc: 'Персонализированное путешествие на комфортабельном микроавтобусе с водителем. Вы сами выбираете маршрут.',
-          link: '#'
-        },
-        scheduled: {
-          img: 'https://images.unsplash.com/photo-1591025207163-942350e47db6?w=600&auto=format',
-          title: 'Сборные групповые экскурсии',
-          desc: 'Присоединяйтесь к нашим небольшим группам с фиксированными маршрутами. Новые знакомства и общие впечатления.',
-          link: '#'
-        },
-        transfers: {
-          img: 'https://images.unsplash.com/photo-1569949381669-ecf31ae8e613?w=600&auto=format',
-          title: 'Комфортные трансферы',
-          desc: 'Встреча в аэропорту, порту или отеле. Автомобили бизнес-класса, детские кресла, любой багаж.',
-          link: '#'
-        },
-        wheelchair: {
-          img: 'https://images.unsplash.com/photo-1584636633440-6f72682e911e?w=600&auto=format',
-          title: 'Доступная среда',
-          desc: 'Специально оборудованные автомобили и маршруты для путешественников с ограниченной мобильностью.',
-          link: '#'
-        }
-      };
-
-      tabs.forEach(tab => {
-        tab.addEventListener('click', function () {
-          tabs.forEach(t => t.classList.remove('active'));
-          this.classList.add('active');
-
-          const tabKey = this.dataset.tab;
-          const data = tabData[tabKey];
-          if (data) {
-            previewImg.src = data.img;
-            previewTitle.innerText = data.title;
-            previewDesc.innerText = data.desc;
-            previewLink.href = data.link;
-          }
-        });
-      });
-
+      
       // 3. Кнопка бронирования
       const bookBtn = document.querySelector('.header-cta .btn');
       if (bookBtn) {
@@ -2041,7 +1999,7 @@
           alertMsg: 'Смотреть все индивидуальные туры'
         },
         scheduled: {
-          image: 'images/1776017148882.jpg', // замените на реальный путь
+          image: 'images/1776017148882.jpg', 
           alt: 'Сборная группа',
           title: 'Сборные группы на комфортабельных автобусах',
           desc: 'Присоединяйтесь к готовым экскурсионным группам. Экономный вариант с насыщенной программой.',
@@ -2052,7 +2010,7 @@
           alertMsg: 'Смотреть все сборные туры'
         },
         transfers: {
-          image: 'images/1776017768610.jpg', // замените на реальный путь
+          image: 'images/1776017768610.jpg', 
           alt: 'Трансфер',
           title: 'Трансферы любой сложности',
           desc: 'Встреча в аэропорту, переезды между городами, поездки на мероприятия. Автомобили разного класса.',
