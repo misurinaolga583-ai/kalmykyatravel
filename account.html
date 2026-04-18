@@ -1293,533 +1293,228 @@
         </div>
     </footer>
     <script>
-        // ---------- Хранение пользователей и сессии (логика не менялась) ----------
         let currentUser = null;
 
-        function initUsersStorage() {
-            if (!localStorage.getItem('appUsers')) {
-                localStorage.setItem('appUsers', JSON.stringify([]));
-            }
-        }
+function initUsersStorage() {
+    if (!localStorage.getItem('appUsers')) {
+        localStorage.setItem('appUsers', JSON.stringify([]));
+    }
+}
+function saveUsers(users) { localStorage.setItem('appUsers', JSON.stringify(users)); }
+function getUsers() { return JSON.parse(localStorage.getItem('appUsers')) || []; }
+function saveCurrentUser(user) { localStorage.setItem('currentUser', JSON.stringify(user)); currentUser = user; }
+function getCurrentUser() {
+    if (currentUser) return currentUser;
+    const stored = localStorage.getItem('currentUser');
+    if (stored) { currentUser = JSON.parse(stored); return currentUser; }
+    return null;
+}
+function logout() {
+    localStorage.removeItem('currentUser');
+    currentUser = null;
+    showAuthBlock();
+    showToast('Вы вышли из системы');
+}
+function login(email, password) {
+    const users = getUsers();
+    const user = users.find(u => u.email === email && u.password === password);
+    if (user) { saveCurrentUser(user); showDashboard(); showToast(`Добро пожаловать, ${user.fullName || user.email}`); return true; }
+    else { showToast('Неверный email или пароль', true); return false; }
+}
+function register(fullName, email, password) {
+    if (password.length < 6) { showToast('Пароль должен быть не менее 6 символов', true); return false; }
+    const users = getUsers();
+    if (users.find(u => u.email === email)) { showToast('Пользователь с таким email уже существует', true); return false; }
+    const newUser = {
+        id: Date.now(), fullName, email, password,
+        firstName: fullName.split(' ')[0] || '', lastName: fullName.split(' ')[1] || '',
+        gender: 'Male', address: '', phone: '', dob: '', location: 'Moscow', postalCode: '',
+        avatar: 'images/f30cac7dc50249728dab41f81cca.jpg'
+    };
+    users.push(newUser); saveUsers(users); saveCurrentUser(newUser); showDashboard(); showToast('Регистрация успешна!');
+    return true;
+}
+function updateUserProfile(updatedData) {
+    if (!currentUser) return;
+    const users = getUsers();
+    const index = users.findIndex(u => u.id === currentUser.id);
+    if (index !== -1) {
+        users[index] = { ...users[index], ...updatedData };
+        saveUsers(users); saveCurrentUser(users[index]);
+        fillProfileForm(users[index]); showToast('Данные сохранены');
+    }
+}
+function fillProfileForm(user) {
+    document.getElementById('firstName').value = user.firstName || '';
+    document.getElementById('lastName').value = user.lastName || '';
+    document.getElementById('userEmail').value = user.email || '';
+    document.getElementById('address').value = user.address || '';
+    document.getElementById('phone').value = user.phone || '';
+    document.getElementById('dob').value = user.dob || '';
+    document.getElementById('location').value = user.location || 'Moscow';
+    document.getElementById('postalCode').value = user.postalCode || '';
+    document.querySelectorAll('input[name="gender"]').forEach(r => { if (r.value === user.gender) r.checked = true; });
+    document.getElementById('profileName').innerText = user.fullName || user.email;
+    document.getElementById('avatarImg').src = user.avatar || 'images/f30cac7dc50249728dab41f81cca.jpg';
+}
+function showAuthBlock() {
+    document.getElementById('authBlock').classList.remove('hidden');
+    document.getElementById('dashboardBlock').classList.add('hidden');
+}
+function showDashboard() {
+    document.getElementById('authBlock').classList.add('hidden');
+    document.getElementById('dashboardBlock').classList.remove('hidden');
+    const user = getCurrentUser();
+    if (user) fillProfileForm(user);
+    initSidebarHandlers();
+    renderOrders();
+    switchDashboardSection('personalInfoSection');
+    document.querySelectorAll('.sidebar-item').forEach(item => {
+        item.classList.toggle('active', item.getAttribute('data-section') === 'personal');
+    });
+}
 
-        function saveUsers(users) {
-            localStorage.setItem('appUsers', JSON.stringify(users));
-        }
+// ---------- Аватар ----------
+document.getElementById('editAvatarBtn')?.addEventListener('click', () => document.getElementById('avatarUpload').click());
+document.getElementById('avatarUpload')?.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file && currentUser) {
+        const reader = new FileReader();
+        reader.onload = ev => { updateUserProfile({ avatar: ev.target.result }); document.getElementById('avatarImg').src = ev.target.result; };
+        reader.readAsDataURL(file);
+    }
+});
 
-        function getUsers() {
-            return JSON.parse(localStorage.getItem('appUsers')) || [];
-        }
+// ---------- Сохранение профиля ----------
+document.getElementById('saveBtn')?.addEventListener('click', () => {
+    if (!currentUser) return;
+    const gender = document.querySelector('input[name="gender"]:checked')?.value || 'Male';
+    updateUserProfile({
+        firstName: document.getElementById('firstName').value,
+        lastName: document.getElementById('lastName').value,
+        email: document.getElementById('userEmail').value,
+        address: document.getElementById('address').value,
+        phone: document.getElementById('phone').value,
+        dob: document.getElementById('dob').value,
+        location: document.getElementById('location').value,
+        postalCode: document.getElementById('postalCode').value,
+        gender,
+        fullName: `${document.getElementById('firstName').value} ${document.getElementById('lastName').value}`.trim()
+    });
+});
+document.getElementById('discardBtn')?.addEventListener('click', () => { if (currentUser) fillProfileForm(currentUser); });
+document.querySelectorAll('.profile-menu-item[data-profile-tab]').forEach(item => {
+    item.addEventListener('click', () => {
+        const tab = item.getAttribute('data-profile-tab');
+        document.querySelectorAll('.profile-menu-item').forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+        switchDashboardSection(tab === 'personal' ? 'personalInfoSection' : 'securitySection');
+    });
+});
+document.getElementById('changePasswordBtn')?.addEventListener('click', () => {
+    const newPass = document.getElementById('newPassword').value;
+    if (newPass.length < 6) { showToast('Пароль должен быть не менее 6 символов', true); return; }
+    updateUserProfile({ password: newPass });
+    document.getElementById('newPassword').value = '';
+});
+document.getElementById('logoutBtn')?.addEventListener('click', logout);
 
-        function saveCurrentUser(user) {
-            localStorage.setItem('currentUser', JSON.stringify(user));
-            currentUser = user;
-        }
+// ---------- Вход / Регистрация ----------
+document.getElementById('doLogin')?.addEventListener('click', () => login(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value));
+document.getElementById('doRegister')?.addEventListener('click', () => register(document.getElementById('regFullName').value, document.getElementById('regEmail').value, document.getElementById('regPassword').value));
+document.getElementById('switchToRegister')?.addEventListener('click', e => { e.preventDefault(); document.querySelector('.auth-tab[data-tab="register"]').click(); });
+document.getElementById('switchToLogin')?.addEventListener('click', e => { e.preventDefault(); document.querySelector('.auth-tab[data-tab="login"]').click(); });
+document.querySelectorAll('.auth-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        const target = tab.getAttribute('data-tab');
+        document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById('loginForm').classList.toggle('hidden', target !== 'login');
+        document.getElementById('registerForm').classList.toggle('hidden', target !== 'register');
+    });
+});
+document.querySelectorAll('.toggle-password').forEach(icon => {
+    icon.addEventListener('click', function () {
+        const input = this.previousElementSibling;
+        const isPassword = input.type === 'password';
+        input.type = isPassword ? 'text' : 'password';
+        this.classList.toggle('fa-eye-slash', !isPassword);
+        this.classList.toggle('fa-eye', isPassword);
+    });
+});
 
-        function getCurrentUser() {
-            if (currentUser) return currentUser;
-            const stored = localStorage.getItem('currentUser');
-            if (stored) {
-                currentUser = JSON.parse(stored);
-                return currentUser;
-            }
-            return null;
-        }
+function showToast(msg, isError = false) {
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.style.background = isError ? '#d9534f' : '#2C365A';
+    toast.innerText = msg;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
 
-        function logout() {
-            localStorage.removeItem('currentUser');
-            currentUser = null;
-            showAuthBlock();
-            showToast('Вы вышли из системы');
-        }
+// ---------- Бургер-меню ----------
+document.querySelector('.burger-menu')?.addEventListener('click', function () {
+    document.querySelector('.nav-menu').classList.toggle('active');
+    this.classList.toggle('active');
+});
 
-        function login(email, password) {
-            const users = getUsers();
-            const user = users.find(u => u.email === email && u.password === password);
-            if (user) {
-                saveCurrentUser(user);
-                showDashboard();
-                showToast(`Добро пожаловать, ${user.fullName || user.email}`);
-                return true;
-            } else {
-                showToast('Неверный email или пароль', true);
-                return false;
-            }
-        }
+// ---------- Работа с заказами и отзывами ----------
+function getOrders() { return JSON.parse(localStorage.getItem('orders')) || []; }
+function getReviews() { return JSON.parse(localStorage.getItem('reviews')) || []; }
+function saveReviews(reviews) { localStorage.setItem('reviews', JSON.stringify(reviews)); }
+function addReview(review) { const reviews = getReviews(); reviews.push(review); saveReviews(reviews); }
+function getUserReviews(userId) { return getReviews().filter(r => r.userId === userId); }
 
-        function register(fullName, email, password) {
-            if (password.length < 6) {
-                showToast('Пароль должен быть не менее 6 символов', true);
-                return false;
-            }
-            const users = getUsers();
-            if (users.find(u => u.email === email)) {
-                showToast('Пользователь с таким email уже существует', true);
-                return false;
-            }
-            const newUser = {
-                id: Date.now(),
-                fullName,
-                email,
-                password,
-                firstName: fullName.split(' ')[0] || '',
-                lastName: fullName.split(' ')[1] || '',
-                gender: 'Male',
-                address: '',
-                phone: '',
-                dob: '',
-                location: 'Moscow',
-                postalCode: '',
-                avatar: 'images/f30cac7dc50249728dab41f81cca.jpg'
-            };
-            users.push(newUser);
-            saveUsers(users);
-            saveCurrentUser(newUser);
-            showDashboard();
-            showToast('Регистрация успешна!');
-            return true;
-        }
+// Статус считается оплаченным, если он равен одному из вариантов (регистронезависимо)
+function isPaidStatus(status) {
+    if (!status) return false;
+    const s = status.trim().toLowerCase();
+    return ['оплачен', 'paid', 'оплачено'].includes(s);
+}
 
-        function updateUserProfile(updatedData) {
-            if (!currentUser) return;
-            const users = getUsers();
-            const index = users.findIndex(u => u.id === currentUser.id);
-            if (index !== -1) {
-                users[index] = { ...users[index], ...updatedData };
-                saveUsers(users);
-                saveCurrentUser(users[index]);
-                fillProfileForm(users[index]);
-                showToast('Данные сохранены');
-            }
-        }
+// Возвращает оплаченные заказы текущего пользователя, на которые ещё нет отзыва
+function getPaidOrdersWithoutReview(userId) {
+    const orders = getOrders();
+    const userOrders = orders.filter(order => order.userId === userId && isPaidStatus(order.status));
+    const userReviews = getUserReviews(userId);
+    const reviewedOrderIds = userReviews.map(r => r.orderId);
+    return userOrders.filter(order => !reviewedOrderIds.includes(order.id));
+}
 
-        function fillProfileForm(user) {
-            document.getElementById('firstName').value = user.firstName || '';
-            document.getElementById('lastName').value = user.lastName || '';
-            document.getElementById('userEmail').value = user.email || '';
-            document.getElementById('address').value = user.address || '';
-            document.getElementById('phone').value = user.phone || '';
-            document.getElementById('dob').value = user.dob || '';
-            document.getElementById('location').value = user.location || 'Moscow';
-            document.getElementById('postalCode').value = user.postalCode || '';
-            const genderRadios = document.querySelectorAll('input[name="gender"]');
-            genderRadios.forEach(radio => {
-                if (radio.value === user.gender) radio.checked = true;
-            });
-            document.getElementById('profileName').innerText = user.fullName || user.email;
-            document.getElementById('avatarImg').src = user.avatar || 'images/f30cac7dc50249728dab41f81cca.jpg';
-        }
+// Рендер звёздочек (только для чтения)
+function renderStars(rating) {
+    let stars = '';
+    for (let i = 1; i <= 5; i++) {
+        stars += `<i class="fas fa-star" style="color:${i <= rating ? '#f5b301' : '#ccc'}"></i>`;
+    }
+    return stars;
+}
 
-        function showAuthBlock() {
-            document.getElementById('authBlock').classList.remove('hidden');
-            document.getElementById('dashboardBlock').classList.add('hidden');
-        }
-        function showDashboard() {
-            document.getElementById('authBlock').classList.add('hidden');
-            document.getElementById('dashboardBlock').classList.remove('hidden');
-            const user = getCurrentUser();
-            if (user) fillProfileForm(user);
-            // Инициализация сайдбара и рендеринг заказов
-            initSidebarHandlers();
-            renderOrders();
-            // По умолчанию показываем личную информацию
-            switchDashboardSection('personalInfoSection');
-            // Активируем иконку "Главная"
-            document.querySelectorAll('.sidebar-item').forEach(item => {
-                if (item.getAttribute('data-section') === 'personal') {
-                    item.classList.add('active');
-                } else {
-                    item.classList.remove('active');
-                }
-            });
-        }
+// Отрисовка секции отзывов
+function renderReviewsSection() {
+    const user = getCurrentUser();
+    if (!user) return;
 
-        document.getElementById('editAvatarBtn')?.addEventListener('click', () => {
-            document.getElementById('avatarUpload').click();
-        });
-        document.getElementById('avatarUpload')?.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file && currentUser) {
-                const reader = new FileReader();
-                reader.onload = function (ev) {
-                    const newAvatar = ev.target.result;
-                    updateUserProfile({ avatar: newAvatar });
-                    document.getElementById('avatarImg').src = newAvatar;
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-
-        document.getElementById('saveBtn')?.addEventListener('click', () => {
-            if (!currentUser) return;
-            const gender = document.querySelector('input[name="gender"]:checked')?.value || 'Male';
-            const updated = {
-                firstName: document.getElementById('firstName').value,
-                lastName: document.getElementById('lastName').value,
-                email: document.getElementById('userEmail').value,
-                address: document.getElementById('address').value,
-                phone: document.getElementById('phone').value,
-                dob: document.getElementById('dob').value,
-                location: document.getElementById('location').value,
-                postalCode: document.getElementById('postalCode').value,
-                gender: gender,
-                fullName: `${document.getElementById('firstName').value} ${document.getElementById('lastName').value}`.trim()
-            };
-            updateUserProfile(updated);
-        });
-
-        document.getElementById('discardBtn')?.addEventListener('click', () => {
-            if (currentUser) fillProfileForm(currentUser);
-        });
-
-        document.querySelectorAll('.profile-menu-item[data-profile-tab]').forEach(item => {
-            item.addEventListener('click', (e) => {
-                const tab = item.getAttribute('data-profile-tab');
-                document.querySelectorAll('.profile-menu-item').forEach(i => i.classList.remove('active'));
-                item.classList.add('active');
-                if (tab === 'personal') {
-                    document.getElementById('personalInfoSection').classList.remove('hidden');
-                    document.getElementById('securitySection').classList.add('hidden');
-                } else if (tab === 'security') {
-                    document.getElementById('personalInfoSection').classList.add('hidden');
-                    document.getElementById('securitySection').classList.remove('hidden');
-                }
-            });
-        });
-
-        document.getElementById('changePasswordBtn')?.addEventListener('click', () => {
-            const newPass = document.getElementById('newPassword').value;
-            if (newPass.length < 6) {
-                showToast('Пароль должен быть не менее 6 символов', true);
-                return;
-            }
-            updateUserProfile({ password: newPass });
-            document.getElementById('newPassword').value = '';
-        });
-
-        document.getElementById('logoutBtn')?.addEventListener('click', logout);
-
-        document.getElementById('doLogin')?.addEventListener('click', () => {
-            const email = document.getElementById('loginEmail').value;
-            const pass = document.getElementById('loginPassword').value;
-            login(email, pass);
-        });
-        document.getElementById('doRegister')?.addEventListener('click', () => {
-            const name = document.getElementById('regFullName').value;
-            const email = document.getElementById('regEmail').value;
-            const pass = document.getElementById('regPassword').value;
-            register(name, email, pass);
-        });
-
-        const loginFormDiv = document.getElementById('loginForm');
-        const registerFormDiv = document.getElementById('registerForm');
-        document.getElementById('switchToRegister')?.addEventListener('click', (e) => {
-            e.preventDefault();
-            document.querySelector('.auth-tab[data-tab="register"]').click();
-        });
-        document.getElementById('switchToLogin')?.addEventListener('click', (e) => {
-            e.preventDefault();
-            document.querySelector('.auth-tab[data-tab="login"]').click();
-        });
-        document.querySelectorAll('.auth-tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                const target = tab.getAttribute('data-tab');
-                document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                if (target === 'login') {
-                    loginFormDiv.classList.remove('hidden');
-                    registerFormDiv.classList.add('hidden');
-                } else {
-                    loginFormDiv.classList.add('hidden');
-                    registerFormDiv.classList.remove('hidden');
-                }
-            });
-        });
-
-        document.querySelectorAll('.toggle-password').forEach(icon => {
-            icon.addEventListener('click', function () {
-                const input = this.previousElementSibling;
-                if (input.type === 'password') {
-                    input.type = 'text';
-                    this.classList.remove('fa-eye-slash');
-                    this.classList.add('fa-eye');
-                } else {
-                    input.type = 'password';
-                    this.classList.remove('fa-eye');
-                    this.classList.add('fa-eye-slash');
-                }
-            });
-        });
-
-        function showToast(msg, isError = false) {
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            toast.style.background = isError ? '#d9534f' : '#2C365A';
-            toast.innerText = msg;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
-        }
-
-        initUsersStorage();
-        if (getCurrentUser()) {
-            showDashboard();
+    // Заполняем select оплаченными турами
+    const select = document.getElementById('reviewTourSelect');
+    if (select) {
+        const availableOrders = getPaidOrdersWithoutReview(user.id);
+        if (availableOrders.length === 0) {
+            select.innerHTML = '<option value="">Нет оплаченных туров для отзыва</option>';
         } else {
-            showAuthBlock();
+            select.innerHTML = '<option value="">Выберите оплаченный тур</option>' +
+                availableOrders.map(order => `<option value="${order.id}">${escapeHtml(order.name)} (статус: ${order.status})</option>`).join('');
         }
+    }
 
-        const burger = document.querySelector('.burger-menu');
-        const navMenu = document.querySelector('.nav-menu');
-        if (burger) {
-            burger.addEventListener('click', () => {
-                navMenu.classList.toggle('active');
-                burger.classList.toggle('active');
-            });
-        }
-        // --- Рендеринг заказов ---
-        function renderOrders() {
-            const user = getCurrentUser();
-            if (!user) return;
-
-            const orders = JSON.parse(localStorage.getItem('orders')) || [];
-            const userOrders = orders.filter(order => order.userId === user.id);
-
-            // Мои туры (активные: оплаченные и забронированные, с датами в будущем или не истекшими)
-            const now = new Date();
-            const activeOrders = userOrders.filter(order => {
-                const endDate = new Date(order.endDate);
-                return endDate >= now && (order.status === 'Оплачен' || order.status === 'Забронирован');
-            });
-            // История (завершённые: прошедшие даты или статус "Завершён")
-            const historyOrders = userOrders.filter(order => {
-                const endDate = new Date(order.endDate);
-                return endDate < now || order.status === 'Завершён';
-            });
-            // Платежи (просто все заказы, можно вывести список с суммой)
-            const paymentsList = userOrders.map(order => ({
-                name: order.name,
-                amount: order.price * (order.quantity || 1),
-                date: order.bookedAt
-            }));
-
-            // Рендерим "Мои туры"
-            const myToursContainer = document.getElementById('myToursList');
-            if (myToursContainer) {
-                if (activeOrders.length === 0) {
-                    myToursContainer.innerHTML = '<p>&nbsp;&nbsp;У вас нет активных туров.</p>';
-                } else {
-                    myToursContainer.innerHTML = activeOrders.map(order => `
-                <div class="tour-order-card">
-                    <img src="${order.images?.[0] || 'https://via.placeholder.com/100'}" alt="${order.name}">
-                    <div class="tour-order-info">
-                        <div class="tour-order-title">${order.name}</div>
-                        <div class="tour-order-dates">${order.startDate} — ${order.endDate}</div>
-                        <div>Туристов: ${order.tourists || 1}</div>
-                        <div>Сумма: ${(order.price * (order.quantity || 1)).toLocaleString()} ₽</div>
-                    </div>
-                    <div class="tour-order-status ${order.status === 'Оплачен' ? 'status-paid' : 'status-booked'}">${order.status}</div>
-                </div>
-            `).join('');
-                }
-            }
-
-            // Рендерим "История"
-            const historyContainer = document.getElementById('historyList');
-            if (historyContainer) {
-                if (historyOrders.length === 0) {
-                    historyContainer.innerHTML = '<p>У вас нет завершённых поездок.</p>';
-                } else {
-                    historyContainer.innerHTML = historyOrders.map(order => `
-                <div class="tour-order-card">
-                    <img src="${order.images?.[0] || 'https://via.placeholder.com/100'}" alt="${order.name}">
-                    <div class="tour-order-info">
-                        <div class="tour-order-title">${order.name}</div>
-                        <div class="tour-order-dates">${order.startDate} — ${order.endDate}</div>
-                        <div>Туристов: ${order.tourists || 1}</div>
-                        <div>Сумма: ${(order.price * (order.quantity || 1)).toLocaleString()} ₽</div>
-                    </div>
-                    <div class="tour-order-status status-completed">Завершён</div>
-                </div>
-            `).join('');
-                }
-            }
-
-            // Рендерим "Платежи"
-            const paymentsContainer = document.getElementById('paymentsList');
-            if (paymentsContainer) {
-                if (paymentsList.length === 0) {
-                    paymentsContainer.innerHTML = '<p>Нет платежей.</p>';
-                } else {
-                    paymentsContainer.innerHTML = paymentsList.map(payment => `
-                <div class="tour-order-card">
-                    <div class="tour-order-info">
-                        <div class="tour-order-title">${payment.name}</div>
-                        <div class="tour-order-dates">${new Date(payment.date).toLocaleDateString()}</div>
-                        <div>Сумма: ${payment.amount.toLocaleString()} ₽</div>
-                    </div>
-                    <div class="tour-order-status status-paid">Оплачено</div>
-                </div>
-            `).join('');
-                }
-            }
-        }
-
-        // Переключение секций в дашборде
-        function switchDashboardSection(sectionId) {
-            const sections = document.querySelectorAll('.dashboard-section');
-            sections.forEach(section => section.classList.add('hidden'));
-            const targetSection = document.getElementById(sectionId);
-            if (targetSection) targetSection.classList.remove('hidden');
-        }
-
-        // Обновляем обработчики кликов на сайдбаре
-        function initSidebarHandlers() {
-            const sidebarItems = document.querySelectorAll('.sidebar-item');
-            sidebarItems.forEach(item => {
-                item.addEventListener('click', () => {
-                    const section = item.getAttribute('data-section');
-                    sidebarItems.forEach(i => i.classList.remove('active'));
-                    item.classList.add('active');
-
-                    let sectionId = '';
-                    switch (section) {
-                        case 'personal':
-                            sectionId = 'personalInfoSection';
-                            break;
-                        case 'tours':
-                            sectionId = 'myToursSection';
-                            renderOrders(); // обновляем список туров
-                            break;
-                        case 'documents':
-                            sectionId = 'documentsSection';
-                            break;
-                        case 'history':
-                            sectionId = 'historySection';
-                            renderOrders();
-                            break;
-                        case 'payments':
-                            sectionId = 'paymentsSection';
-                            renderOrders();
-                            break;
-                        case 'notifications':
-                            sectionId = 'notificationsSection';
-                            break;
-                        case 'settings':
-                            sectionId = 'settingsSection';
-                            break;
-                        default:
-                            sectionId = 'personalInfoSection';
-                    }
-                    switchDashboardSection(sectionId);
-                });
-            });
-        }
-
-        // Вызываем initSidebarHandlers после рендеринга дашборда
-        // В функции showDashboard() после fillProfileForm добавить вызовы:
-        // initSidebarHandlers(); и renderOrders();
-
-        // Также нужно обновить переключение между профилем и безопасностью (profile-menu)
-        // У нас уже есть обработчики для profile-menu-item, но они используют старые id. Обновим их.
-        document.querySelectorAll('.profile-menu-item[data-profile-tab]').forEach(item => {
-            item.addEventListener('click', (e) => {
-                const tab = item.getAttribute('data-profile-tab');
-                document.querySelectorAll('.profile-menu-item').forEach(i => i.classList.remove('active'));
-                item.classList.add('active');
-                if (tab === 'personal') {
-                    switchDashboardSection('personalInfoSection');
-                } else if (tab === 'security') {
-                    switchDashboardSection('securitySection');
-                }
-            });
-        });
-
-        // Переопределим функцию showDashboard, чтобы инициализировать переключение
-        const originalShowDashboard = showDashboard;
-        window.showDashboard = function () {
-            originalShowDashboard();
-            initSidebarHandlers();
-            renderOrders();
-            // По умолчанию показываем личную информацию
-            switchDashboardSection('personalInfoSection');
-            // Активируем соответствующую иконку в сайдбаре
-            document.querySelectorAll('.sidebar-item').forEach(item => {
-                if (item.getAttribute('data-section') === 'personal') {
-                    item.classList.add('active');
-                } else {
-                    item.classList.remove('active');
-                }
-            });
-        };
-        showDashboard = window.showDashboard; // переопределяем глобальную
-
-        // Также в существующем коде после вызова showDashboard() при логине нужно обновить
-        // В функции login и register после saveCurrentUser и showDashboard вызываем renderOrders()
-        // В самом конце, после initUsersStorage и проверки авторизации, если пользователь есть, вызываем renderOrders()
-        // --- Функции для работы с отзывами ---
-        function getReviews() {
-            return JSON.parse(localStorage.getItem('reviews')) || [];
-        }
-
-        function saveReviews(reviews) {
-            localStorage.setItem('reviews', JSON.stringify(reviews));
-        }
-
-        function addReview(review) {
-            const reviews = getReviews();
-            reviews.push(review);
-            saveReviews(reviews);
-        }
-
-        function getUserReviews(userId) {
-            return getReviews().filter(r => r.userId === userId);
-        }
-
-        // Получить оплаченные заказы пользователя, на которые ещё нет отзыва
-        function getPaidOrdersWithoutReview(userId) {
-            const orders = JSON.parse(localStorage.getItem('orders')) || [];
-            const userOrders = orders.filter(order => order.userId === userId);
-            const paidOrders = userOrders.filter(order => {
-                const status = (order.status || '').trim().toLowerCase();
-                return status === 'оплачен';
-            });
-            const userReviews = getUserReviews(userId);
-            const reviewedOrderIds = userReviews.map(r => r.orderId);
-            return paidOrders.filter(order => !reviewedOrderIds.includes(order.id));
-        }
-
-        // Отрисовка звёзд (только для чтения)
-        function renderStars(rating) {
-            let stars = '';
-            for (let i = 1; i <= 5; i++) {
-                stars += `<i class="fas fa-star" style="color:${i <= rating ? '#f5b301' : '#ccc'}"></i>`;
-            }
-            return stars;
-        }
-
-        // Отрисовка всей секции отзывов (форма + список)
-        function renderReviewsSection() {
-            const user = getCurrentUser();
-            if (!user) return;
-
-            // 1. Заполняем select доступными оплаченными турами
-            const select = document.getElementById('reviewTourSelect');
-            if (select) {
-                const availableOrders = getPaidOrdersWithoutReview(user.id);
-                if (availableOrders.length === 0) {
-                    select.innerHTML = '<option value="">Нет оплаченных туров для отзыва</option>';
-                } else {
-                    select.innerHTML = '<option value="">Выберите оплаченный тур</option>' +
-                        availableOrders.map(order => `<option value="${order.id}">${escapeHtml(order.name)} (статус: ${order.status})</option>`).join('');
-                }
-            }
-
-            // 2. Список уже написанных отзывов
-            const reviewsListDiv = document.getElementById('reviewsList');
-            if (reviewsListDiv) {
-                const userReviews = getUserReviews(user.id);
-                if (userReviews.length === 0) {
-                    reviewsListDiv.innerHTML = '<p>Вы ещё не оставили ни одного отзыва.</p>';
-                } else {
-                    reviewsListDiv.innerHTML = userReviews.map(review => `
+    // Список уже написанных отзывов
+    const reviewsListDiv = document.getElementById('reviewsList');
+    if (reviewsListDiv) {
+        const userReviews = getUserReviews(user.id);
+        if (userReviews.length === 0) {
+            reviewsListDiv.innerHTML = '<p>Вы ещё не оставили ни одного отзыва.</p>';
+        } else {
+            reviewsListDiv.innerHTML = userReviews.map(review => `
                 <div class="review-card">
                     <div class="rating-stars-readonly">${renderStars(review.rating)}</div>
                     <p><strong>${escapeHtml(review.tourName)}</strong> (${new Date(review.date).toLocaleDateString()})</p>
@@ -1831,199 +1526,217 @@
                     ` : ''}
                 </div>
             `).join('');
-                }
-            }
         }
+    }
+}
 
-        // Защита от XSS
-        function escapeHtml(str) {
-            if (!str) return '';
-            return str.replace(/[&<>]/g, function (m) {
-                if (m === '&') return '&amp;';
-                if (m === '<') return '&lt;';
-                if (m === '>') return '&gt;';
-                return m;
-            });
-        }
-
-        // ---------- Динамические элементы формы (звёзды, превью, отправка) ----------
-        // Инициализация звёзд рейтинга (вешается один раз, но при перерисовке формы не сломается)
-        function initRatingStars() {
-            const stars = document.querySelectorAll('#ratingStars i');
-            const ratingInput = document.getElementById('reviewRating');
-            if (!stars.length || !ratingInput) return;
-            stars.forEach(star => {
-                star.removeEventListener('click', starClickHandler);
-                star.addEventListener('click', starClickHandler);
-            });
-            function starClickHandler() {
-                const value = parseInt(this.getAttribute('data-value'));
-                ratingInput.value = value;
-                stars.forEach(s => {
-                    if (parseInt(s.getAttribute('data-value')) <= value) {
-                        s.classList.remove('far');
-                        s.classList.add('fas');
-                        s.style.color = '#f5b301';
-                    } else {
-                        s.classList.remove('fas');
-                        s.classList.add('far');
-                        s.style.color = '#ccc';
-                    }
-                });
-            }
-        }
-
-
-
-        // Отправка отзыва (через делегирование, чтобы всегда работало)
-        function initReviewSubmit() {
-            document.removeEventListener('click', reviewSubmitHandler);
-            document.addEventListener('click', reviewSubmitHandler);
-        }
-
-        async function reviewSubmitHandler(e) {
-            // Ищем клик по кнопке отправки или по дочернему элементу
-            let button = e.target.closest('#submitReviewBtn');
-            if (!button) return;
-
-            const user = getCurrentUser();
-            if (!user) {
-                showToast('Необходимо войти в аккаунт', true);
-                return;
-            }
-
-            const orderId = document.getElementById('reviewTourSelect')?.value;
-            if (!orderId) {
-                showToast('Выберите тур', true);
-                return;
-            }
-
-            const rating = parseInt(document.getElementById('reviewRating')?.value || '0');
-            if (rating === 0) {
-                showToast('Поставьте оценку', true);
-                return;
-            }
-
-            const text = document.getElementById('reviewText')?.value.trim();
-            if (!text) {
-                showToast('Введите текст отзыва', true);
-                return;
-            }
-
-            // Проверка заказа
-            const orders = JSON.parse(localStorage.getItem('orders')) || [];
-            const order = orders.find(o => o.id == orderId);
-            if (!order) {
-                showToast('Ошибка: тур не найден', true);
-                return;
-            }
-            const orderStatus = (order.status || '').trim().toLowerCase();
-            if (orderStatus !== 'оплачен') {
-                showToast(`Отзыв можно оставить только на оплаченный тур. Текущий статус: "${order.status}"`, true);
-                return;
-            }
-
-            // Создаём отзыв
-            const newReview = {
-                id: Date.now(),
-                userId: user.id,
-                orderId: order.id,
-                tourName: order.name,
-                rating: rating,
-                text: text,
-                images: images,
-                date: new Date().toISOString()
-            };
-            addReview(newReview);
-            showToast('Отзыв отправлен! Спасибо!');
-
-            // Очистка формы
-            const reviewText = document.getElementById('reviewText');
-            const reviewRating = document.getElementById('reviewRating');
-            const reviewImages = document.getElementById('reviewImages');
-            const imagePreview = document.getElementById('imagePreview');
-            if (reviewText) reviewText.value = '';
-            if (reviewRating) reviewRating.value = '0';
-            if (reviewImages) reviewImages.value = '';
-            if (imagePreview) imagePreview.innerHTML = '';
-
-            // Сбросить звёзды
-            const stars = document.querySelectorAll('#ratingStars i');
-            stars.forEach(s => {
-                s.classList.remove('fas');
-                s.classList.add('far');
-                s.style.color = '#ccc';
-            });
-
-            // Обновить отображение
-            renderReviewsSection();
-        }
-
-        // Переключение секций (вызывается при клике на sidebar)
-        function switchDashboardSection(sectionId) {
-            const sections = document.querySelectorAll('.dashboard-section');
-            sections.forEach(section => section.classList.add('hidden'));
-            const targetSection = document.getElementById(sectionId);
-            if (targetSection) targetSection.classList.remove('hidden');
-            if (sectionId === 'documentsSection') {
-                renderReviewsSection();
-                // Переинициализируем динамические элементы формы (звёзды, превью)
-                initRatingStars();
-                initImagePreview();
-            }
-        }
-
-        function initSidebarHandlers() {
-            const sidebarItems = document.querySelectorAll('.sidebar-item');
-            sidebarItems.forEach(item => {
-                item.removeEventListener('click', sidebarClickHandler);
-                item.addEventListener('click', sidebarClickHandler);
-            });
-        }
-
-        function sidebarClickHandler() {
-            const section = this.getAttribute('data-section');
-            document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
-            this.classList.add('active');
-
-            let sectionId = '';
-            switch (section) {
-                case 'personal': sectionId = 'personalInfoSection'; break;
-                case 'tours': sectionId = 'myToursSection'; renderOrders(); break;
-                case 'documents': sectionId = 'documentsSection'; renderReviewsSection(); break;
-                case 'history': sectionId = 'historySection'; renderOrders(); break;
-                case 'payments': sectionId = 'paymentsSection'; renderOrders(); break;
-                case 'notifications': sectionId = 'notificationsSection'; break;
-                case 'settings': sectionId = 'settingsSection'; break;
-                default: sectionId = 'personalInfoSection';
-            }
-            switchDashboardSection(sectionId);
-        }
-
-        // Инициализация всей системы отзывов (один раз)
-        function initReviewsSystem() {
-            initReviewSubmit();    // делегированный обработчик кнопки
-            // Инициализация предпросмотра и звёзд произойдёт при открытии секции
-        }
-
-        // Запуск после загрузки DOM
-        document.addEventListener('DOMContentLoaded', () => {
-            initReviewsSystem();
+// Инициализация звёзд рейтинга в форме
+function initRatingStars() {
+    const stars = document.querySelectorAll('#ratingStars i');
+    const ratingInput = document.getElementById('reviewRating');
+    if (!stars.length || !ratingInput) return;
+    stars.forEach(star => {
+        star.removeEventListener('click', starClickHandler);
+        star.addEventListener('click', starClickHandler);
+    });
+    function starClickHandler() {
+        const value = parseInt(this.getAttribute('data-value'));
+        ratingInput.value = value;
+        stars.forEach(s => {
+            const starValue = parseInt(s.getAttribute('data-value'));
+            s.classList.toggle('fas', starValue <= value);
+            s.classList.toggle('far', starValue > value);
+            s.style.color = starValue <= value ? '#f5b301' : '#ccc';
         });
+    }
+}
 
-        // Если showDashboard переопределена, добавляем инициализацию
-        if (typeof window.showDashboard === 'function') {
-            const originalShowDashboard = window.showDashboard;
-            window.showDashboard = function () {
-                originalShowDashboard();
-                initReviewsSystem();
-                // Если при загрузке уже открыта секция документов, проинициализируем её
-                if (!document.getElementById('documentsSection').classList.contains('hidden')) {
-                    initRatingStars();
-                    initImagePreview();
-                }
-            };
+// Обработчик отправки отзыва (делегирование)
+function initReviewSubmit() {
+    document.removeEventListener('click', reviewSubmitHandler);
+    document.addEventListener('click', reviewSubmitHandler);
+}
+async function reviewSubmitHandler(e) {
+    const button = e.target.closest('#submitReviewBtn');
+    if (!button) return;
+
+    const user = getCurrentUser();
+    if (!user) { showToast('Необходимо войти в аккаунт', true); return; }
+
+    const orderId = document.getElementById('reviewTourSelect')?.value;
+    if (!orderId) { showToast('Выберите тур', true); return; }
+
+    const rating = parseInt(document.getElementById('reviewRating')?.value || '0');
+    if (rating === 0) { showToast('Поставьте оценку', true); return; }
+
+    const text = document.getElementById('reviewText')?.value.trim();
+    if (!text) { showToast('Введите текст отзыва', true); return; }
+
+    const orders = getOrders();
+    const order = orders.find(o => o.id == orderId);
+    if (!order) { showToast('Ошибка: тур не найден', true); return; }
+    if (!isPaidStatus(order.status)) { showToast(`Отзыв можно оставить только на оплаченный тур. Текущий статус: "${order.status}"`, true); return; }
+
+    // Добавляем отзыв
+    const newReview = {
+        id: Date.now(),
+        userId: user.id,
+        orderId: order.id,
+        tourName: order.name,
+        rating: rating,
+        text: text,
+        images: [], // если нужна поддержка загрузки изображений — добавьте логику
+        date: new Date().toISOString()
+    };
+    addReview(newReview);
+    showToast('Отзыв отправлен! Спасибо!');
+
+    // Очистка формы
+    document.getElementById('reviewText').value = '';
+    document.getElementById('reviewRating').value = '0';
+    document.querySelectorAll('#ratingStars i').forEach(s => {
+        s.classList.remove('fas'); s.classList.add('far'); s.style.color = '#ccc';
+    });
+    renderReviewsSection();
+}
+
+// Рендер заказов (история, мои туры, платежи)
+function renderOrders() {
+    const user = getCurrentUser();
+    if (!user) return;
+
+    const orders = getOrders();
+    const userOrders = orders.filter(order => order.userId === user.id);
+    const now = new Date();
+
+    // Активные туры (оплаченные или забронированные, дата окончания в будущем)
+    const activeOrders = userOrders.filter(order => {
+        const endDate = new Date(order.endDate);
+        return endDate >= now && (isPaidStatus(order.status) || order.status === 'Забронирован');
+    });
+    // История (прошедшие даты или статус "Завершён")
+    const historyOrders = userOrders.filter(order => {
+        const endDate = new Date(order.endDate);
+        return endDate < now || order.status === 'Завершён';
+    });
+    // Платежи (все заказы с суммой)
+    const paymentsList = userOrders.map(order => ({
+        name: order.name,
+        amount: order.price * (order.quantity || 1),
+        date: order.bookedAt
+    }));
+
+    // Мои туры
+    const myToursContainer = document.getElementById('myToursList');
+    if (myToursContainer) {
+        if (activeOrders.length === 0) {
+            myToursContainer.innerHTML = '<p>&nbsp;&nbsp;У вас нет активных туров.</p>';
+        } else {
+            myToursContainer.innerHTML = activeOrders.map(order => `
+                <div class="tour-order-card">
+                    <img src="${order.images?.[0] || 'https://via.placeholder.com/100'}" alt="${order.name}">
+                    <div class="tour-order-info">
+                        <div class="tour-order-title">${order.name}</div>
+                        <div class="tour-order-dates">${order.startDate} — ${order.endDate}</div>
+                        <div>Туристов: ${order.tourists || 1}</div>
+                        <div>Сумма: ${(order.price * (order.quantity || 1)).toLocaleString()} ₽</div>
+                    </div>
+                    <div class="tour-order-status ${isPaidStatus(order.status) ? 'status-paid' : 'status-booked'}">${order.status}</div>
+                </div>
+            `).join('');
         }
+    }
+
+    // История
+    const historyContainer = document.getElementById('historyList');
+    if (historyContainer) {
+        if (historyOrders.length === 0) {
+            historyContainer.innerHTML = '<p>У вас нет завершённых поездок.</p>';
+        } else {
+            historyContainer.innerHTML = historyOrders.map(order => `
+                <div class="tour-order-card">
+                    <img src="${order.images?.[0] || 'https://via.placeholder.com/100'}" alt="${order.name}">
+                    <div class="tour-order-info">
+                        <div class="tour-order-title">${order.name}</div>
+                        <div class="tour-order-dates">${order.startDate} — ${order.endDate}</div>
+                        <div>Туристов: ${order.tourists || 1}</div>
+                        <div>Сумма: ${(order.price * (order.quantity || 1)).toLocaleString()} ₽</div>
+                    </div>
+                    <div class="tour-order-status status-completed">Завершён</div>
+                </div>
+            `).join('');
+        }
+    }
+
+    // Платежи
+    const paymentsContainer = document.getElementById('paymentsList');
+    if (paymentsContainer) {
+        if (paymentsList.length === 0) {
+            paymentsContainer.innerHTML = '<p>Нет платежей.</p>';
+        } else {
+            paymentsContainer.innerHTML = paymentsList.map(payment => `
+                <div class="tour-order-card">
+                    <div class="tour-order-info">
+                        <div class="tour-order-title">${payment.name}</div>
+                        <div class="tour-order-dates">${new Date(payment.date).toLocaleDateString()}</div>
+                        <div>Сумма: ${payment.amount.toLocaleString()} ₽</div>
+                    </div>
+                    <div class="tour-order-status status-paid">Оплачено</div>
+                </div>
+            `).join('');
+        }
+    }
+}
+
+// Переключение секций дашборда
+function switchDashboardSection(sectionId) {
+    document.querySelectorAll('.dashboard-section').forEach(s => s.classList.add('hidden'));
+    const target = document.getElementById(sectionId);
+    if (target) target.classList.remove('hidden');
+    if (sectionId === 'documentsSection') {
+        renderReviewsSection();
+        initRatingStars();
+    }
+    if (['myToursSection', 'historySection', 'paymentsSection'].includes(sectionId)) {
+        renderOrders();
+    }
+}
+
+function initSidebarHandlers() {
+    document.querySelectorAll('.sidebar-item').forEach(item => {
+        item.removeEventListener('click', sidebarClickHandler);
+        item.addEventListener('click', sidebarClickHandler);
+    });
+}
+function sidebarClickHandler() {
+    const section = this.getAttribute('data-section');
+    document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+    this.classList.add('active');
+    const sectionMap = {
+        personal: 'personalInfoSection',
+        tours: 'myToursSection',
+        documents: 'documentsSection',
+        history: 'historySection',
+        payments: 'paymentsSection',
+        notifications: 'notificationsSection',
+        settings: 'settingsSection'
+    };
+    switchDashboardSection(sectionMap[section] || 'personalInfoSection');
+}
+
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[m]);
+}
+
+// ---------- Инициализация ----------
+initUsersStorage();
+initReviewSubmit();
+if (getCurrentUser()) {
+    showDashboard();
+} else {
+    showAuthBlock();
+}
     </script>
 </body>
 
