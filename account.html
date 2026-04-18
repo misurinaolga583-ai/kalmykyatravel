@@ -778,10 +778,9 @@
             }
         }
 
-        @media (max-width: 992px) {
+               @media (max-width: 992px) {
             .auth-image {
                 display: none;
-                /* на планшетах и ниже скрываем картинку, форма занимает всю ширину */
             }
 
             .auth-form {
@@ -796,9 +795,30 @@
             .dashboard-sidebar {
                 width: 100%;
                 flex-direction: row;
-                justify-content: center;
-                padding: 15px;
+                justify-content: flex-start;
+                /* изменено с center на flex-start для прокрутки */
+                padding: 15px 10px;
                 gap: 25px;
+                overflow-x: auto;
+                /* горизонтальная прокрутка */
+                white-space: nowrap;
+                /* чтобы элементы не переносились */
+                -webkit-overflow-scrolling: touch;
+                /* плавная прокрутка на iOS */
+                scrollbar-width: none;
+                /* скрыть скроллбар Firefox */
+            }
+
+            .dashboard-sidebar::-webkit-scrollbar {
+                display: none;
+                /* скрыть скроллбар Chrome/Safari */
+            }
+
+            .dashboard-sidebar .sidebar-item {
+                flex-shrink: 0;
+                /* чтобы элементы не сжимались */
+                white-space: normal;
+                /* текст внутри может переноситься */
             }
 
             .dashboard-profile {
@@ -811,7 +831,6 @@
                 padding: 20px;
             }
         }
-
         @media (max-width: 768px) {
             .form-row {
                 flex-direction: column;
