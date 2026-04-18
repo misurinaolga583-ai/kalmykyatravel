@@ -830,7 +830,7 @@
             position: fixed;
             bottom: 30px;
             right: 30px;
-            background: #2C365A;
+            background: #dcc187;
             color: white;
             padding: 12px 24px;
             border-radius: 40px;
@@ -1447,7 +1447,7 @@ document.querySelectorAll('.toggle-password').forEach(icon => {
 function showToast(msg, isError = false) {
     const toast = document.createElement('div');
     toast.className = 'toast';
-    toast.style.background = isError ? '#d9534f' : '#2C365A';
+    toast.style.background = isError ? '#d9534f' : '#dcc187';
     toast.innerText = msg;
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 3000);
