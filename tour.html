@@ -2094,19 +2094,6 @@
       addToCart(currentTourForModal, start, end, tourists);
       closeModal();
     });
-    document.getElementById('modalBookNow').addEventListener('click', () => {
-      if (!currentTourForModal) return;
-      const start = modalStartDate.value;
-      const end = modalEndDate.value;
-      const tourists = modalTourists.value === '4+' ? 4 : parseInt(modalTourists.value);
-      if (!start || !end) {
-        alert('Выберите даты');
-        return;
-      }
-      bookTour(currentTourForModal, start, end, tourists);
-      closeModal();
-    });
-
     document.querySelectorAll('.filter-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
