@@ -668,11 +668,33 @@
       color: white;
     }
 
-    .btn-cart-card:hover {
+.btn-cart-card:hover {
+  background: white !important;
+  color: #3d3224 !important;
+  border: 1px solid #dcc187 !important;
+}
 
-      color: white;
-    }
+/* Модальное окно — кнопка "Добавить в корзину" */
+.modal-cart {
+  background: #DCC187 !important;
+  color: #f8f6ed !important;
+  border: none !important;
+}
+.modal-cart:hover {
+  background: #c9ac74 !important;
+  color: #f8f6ed !important;
+}
 
+/* Модальное окно — кнопка "Забронировать" */
+.modal-book {
+  background: #E8CC8F !important;
+  color: #3d3224 !important;
+  border: none !important;
+}
+.modal-book:hover {
+  background: #ddbc79 !important;
+  color: #3d3224 !important;
+}
     /* Модальное окно (без изменений) */
     .modal {
       display: none;
@@ -790,17 +812,6 @@
       cursor: pointer;
     }
 
-    .modal-cart {
-      background: #f8f6ed;
-      border: 1px #dcc187 solid;
-      color: #dcc187;
-
-    }
-
-    .modal-book {
-      background: #dcc187;
-      color: white;
-    }
 
     .program,
     .includes,
@@ -1480,7 +1491,7 @@
         </div>
       </div>
       <div class="modal-buttons">
-        <button class="modal-btn modal-cart" id="modalAddToCart">Добавить в корзину</button>
+        <button class="modal-btn modal-cart" id="modalAddToCart">Добавить .button-cart</button>
         <button class="modal-btn modal-book" id="modalBookNow">Забронировать</button>
       </div>
     </div>
